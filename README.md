@@ -1,4 +1,4 @@
-# 🚀 3D Web Portfolio — Faysal Mahmud
+# 3D Web Portfolio — Faysal Mahmud
 
 Interactive **3D Web Portfolio** for **Faysal Mahmud**, Computer Science and Engineering (CSE) student at **American International University-Bangladesh (AIUB)**.
 
@@ -8,12 +8,12 @@ Built with **Three.js WebGL**, modern cyber glassmorphism, responsive 3D card pe
 
 ---
 
-## 🌟 Key Sections & Verified Features
+##  Key Sections & Verified Features
 
-- **💻 Interactive 3D Developer Desk**: A procedurally modelled laptop (no external model files) on a graphite desk. The lid opens and the screen boots into **Faysal OS** — a real, scrollable HTML screen locked onto the 3D display, built live from `data.js`. The tabs under the laptop (Home, About, Projects, Skills, Research, Leadership, Terminal) switch what the screen shows; Projects is a scrollable image gallery whose Details buttons open the full project modal, and Terminal includes a working contact form. Power, focus and reset controls sit outside the laptop; turning the display off never affects the website itself. Lighter rendering on phones, reduced-motion support, and a static fallback when WebGL is unavailable.
+- ** Interactive 3D Developer Desk**: A procedurally modelled laptop (no external model files) on a graphite desk. The lid opens and the screen boots into **Faysal OS** — a real, scrollable HTML screen locked onto the 3D display, built live from `data.js`. The tabs under the laptop (Home, About, Projects, Skills, Research, Leadership, Terminal) switch what the screen shows; Projects is a scrollable image gallery whose Details buttons open the full project modal, and Terminal includes a working contact form. Power, focus and reset controls sit outside the laptop; turning the display off never affects the website itself. Lighter rendering on phones, reduced-motion support, and a static fallback when WebGL is unavailable.
 - **🎓 Academic Track Record**: Dedicated section for American International University-Bangladesh (AIUB), B.Sc. in Computer Science and Engineering, core CS coursework, and academic honors.
 - **💻 Technical Competencies Matrix**: Clean, categorized presentation of Programming Languages, Tools, Platforms, Research Domains, and Soft Skills without arbitrary proficiency percentage claims.
-- **🚀 Featured Projects (Strongest Completed First)**:
+- ** Featured Projects (Strongest Completed First)**:
   1. **NextTrip — Travel Management System**: Comprehensive travel planning, booking workflows, and itinerary management. *(Completed)*
   2. **FlowSense — AI Cash-Flow Co-Pilot & Financial Platform**: FinTechathon 2026 team project featuring shortage arithmetic, recovery plan calculations, and approval safety checks. *(Competition Prototype)*
   3. **Bank Management System**: Java-based banking application demonstrating clean OOP principles and transaction handling. *(Completed)*
@@ -26,12 +26,12 @@ Built with **Three.js WebGL**, modern cyber glassmorphism, responsive 3D card pe
 - **🔬 Dedicated Research & Publications**:
   - Highlights core research areas: Health Risk Prediction, Explainable AI (XAI), SHAP Feature Interpretation, EV Charging Cybersecurity, Network Intrusion Detection, and AI Ethics.
   - Dedicated cards for the **2 reported peer-reviewed publications** ready for manual linking of verified paper titles, conference/journal names, and DOIs.
-- **🏆 Leadership, Volunteering & Achievements**:
+- ** Leadership, Volunteering & Achievements**:
   - **AIUB R&D Club (Organizer)**: Academic research seminars (Prof. Dr. Nowshad Amin, Prof. Pushp Lata of BITS Pilani, Dr. Md. Saef Ullah Miah), Erasmus Mundus, and research methodology workshops.
   - **Scout Volunteering (~3 Years)**: Community service, medical camp serving >1,300 patients, relief distribution, and served as Team Leader in two camps.
   - **9 Documented Achievements & Competitions**: Presentation wins at State University and Southeast University, University Physics Poster Winner, GP FutureMakers Round 2, CUET 3MT, Sciblitz 2.0, MOS State Championship, and SANSO Scout Jamboree.
 - **💻 Recruiter Interactive Terminal**: Recruiter terminal simulator in the About section with commands: `whoami`, `education`, `skills`, `projects`, `research`, `leadership`, `contact`, `sudo hire 🚀`, `clear`.
-- **🔐 Secret Owner-Only Admin Portal**:
+- ** Secret Owner-Only Admin Portal**:
   - Hidden from regular visitors.
   - Activated via keyboard shortcut (**`Ctrl + Shift + A`** or **`Cmd + Shift + A`**) or by clicking the lock icon in the footer/navbar.
   - Master Passcode: `cse2026` (can be changed anytime in the Admin Settings tab).
