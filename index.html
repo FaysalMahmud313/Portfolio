@@ -78,7 +78,10 @@
   <!-- Main Hero Section with 3D Canvas -->
   <section class="hero-section" id="hero">
     <!-- Three.js Interactive Canvas Container -->
-    <div id="webgl-hero-container"></div>
+    <div id="webgl-hero-container">
+      <!-- Live laptop screen: real HTML mapped onto the 3D display by js/three-scene.js -->
+      <div class="laptop-screen" id="laptop-screen"></div>
+    </div>
 
     <div class="container hero-grid">
       <div class="hero-content">
@@ -155,9 +158,11 @@
         <div class="laptop-hud" role="toolbar" aria-label="3D laptop controls">
           <div class="laptop-apps" role="group" aria-label="Show on laptop screen">
             <button type="button" class="laptop-app-btn" data-laptop-app="home">Home</button>
+            <button type="button" class="laptop-app-btn" data-laptop-app="about">About</button>
             <button type="button" class="laptop-app-btn" data-laptop-app="projects">Projects</button>
             <button type="button" class="laptop-app-btn" data-laptop-app="skills">Skills</button>
             <button type="button" class="laptop-app-btn" data-laptop-app="research">Research</button>
+            <button type="button" class="laptop-app-btn" data-laptop-app="leadership">Leadership</button>
             <button type="button" class="laptop-app-btn" data-laptop-app="contact">Terminal</button>
           </div>
           <div class="laptop-actions">
