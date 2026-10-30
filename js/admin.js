@@ -225,7 +225,7 @@ function setupImageUploader(fileInputId, urlInputId, previewImgId) {
   });
 
   urlInput.addEventListener('input', () => {
-    if (previewImg) previewImg.src = urlInput.value || 'assets/images/demo-avatar.svg';
+    if (previewImg) previewImg.src = urlInput.value || 'assets/images/Profile.png';
   });
 }
 
@@ -244,12 +244,14 @@ function populateAllAdminForms() {
   setVal('admin-location', p.location);
   setVal('admin-github', p.github);
   setVal('admin-linkedin', p.linkedin);
+  setVal('admin-facebook', p.facebook);
+  setVal('admin-whatsapp', p.whatsapp);
   setVal('admin-leetcode', p.leetcode);
   setVal('admin-twitter', p.twitter);
   setVal('admin-resume', p.resumeUrl);
 
   const previewAvatar = document.getElementById('admin-avatar-preview');
-  if (previewAvatar) previewAvatar.src = p.avatar || 'assets/images/demo-avatar.svg';
+  if (previewAvatar) previewAvatar.src = p.avatar || 'assets/images/Profile.png';
 
   renderAdminEducationList();
 
@@ -277,12 +279,14 @@ function saveAdminProfile() {
     tagline: getVal('admin-tagline'),
     bioP1: getVal('admin-bio-p1'),
     bioP2: getVal('admin-bio-p2'),
-    avatar: getVal('admin-avatar-url') || 'assets/images/demo-avatar.svg',
+    avatar: getVal('admin-avatar-url') || 'assets/images/Profile.png',
     email: getVal('admin-email'),
     phone: getVal('admin-phone'),
     location: getVal('admin-location'),
     github: getVal('admin-github'),
     linkedin: getVal('admin-linkedin'),
+    facebook: getVal('admin-facebook').trim(),
+    whatsapp: getVal('admin-whatsapp').trim(),
     leetcode: getVal('admin-leetcode'),
     twitter: getVal('admin-twitter'),
     resumeUrl: getVal('admin-resume').trim()
@@ -434,7 +438,7 @@ function resetProjectForm() {
   setVal('admin-proj-demo', '');
   setVal('admin-proj-image', '');
   const preview = document.getElementById('admin-proj-preview');
-  if (preview) preview.src = 'assets/images/project-nexttrip.svg';
+  if (preview) preview.src = 'assets/images/project-systems.svg';
 
   const title = document.getElementById('admin-proj-form-title');
   if (title) title.textContent = 'Add New Project';
@@ -458,7 +462,7 @@ function loadProjectIntoForm(id) {
   setVal('admin-proj-image', proj.image);
 
   const preview = document.getElementById('admin-proj-preview');
-  if (preview) preview.src = proj.image || 'assets/images/project-nexttrip.svg';
+  if (preview) preview.src = proj.image || 'assets/images/project-systems.svg';
 
   const title = document.getElementById('admin-proj-form-title');
   if (title) title.textContent = 'Edit Project: ' + proj.title;
@@ -506,7 +510,7 @@ function saveAdminProject() {
     tags: tags,
     github: getVal('admin-proj-github'),
     demo: getVal('admin-proj-demo'),
-    image: getVal('admin-proj-image') || 'assets/images/project-nexttrip.svg',
+    image: getVal('admin-proj-image') || 'assets/images/project-systems.svg',
     featured: true
   };
 

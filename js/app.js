@@ -84,10 +84,7 @@ async function setupCvDownload() {
   }
 
   const available = !!url;
-  if (cvUrl !== url) {
-    const frame = document.querySelector('[data-cv-frame]');
-    if (frame) frame.removeAttribute('src');
-  }
+  if (cvUrl !== url) renderedCvUrl = '';
   cvUrl = url;
 
   document.querySelectorAll('[data-cv-open]').forEach((a) => {
@@ -157,6 +154,7 @@ function savePortfolioData(newData) {
 
 function renderAllSections() {
   renderHero();
+  renderHeroSocials();
   renderAbout();
   renderEducation();
   renderSkills();
@@ -217,7 +215,7 @@ function renderAbout() {
 
   const avatarImg = document.getElementById('about-avatar-img');
   if (avatarImg) {
-    avatarImg.src = p.avatar || 'assets/images/demo-avatar.svg';
+    avatarImg.src = p.avatar || 'assets/images/Profile.png';
     avatarImg.alt = p.name;
   }
 
@@ -355,7 +353,7 @@ function renderProjects() {
   container.innerHTML = filtered.map(proj => `
     <div class="project-card tilt-card" data-tilt data-id="${proj.id}">
       <div class="project-image-box">
-        <img src="${escapeHTML(proj.image || 'assets/images/project-nexttrip.svg')}" alt="${escapeHTML(proj.title)}" loading="lazy">
+        <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}" loading="lazy">
         ${proj.status ? `
           <span class="project-status-pill status-${proj.statusClass || 'completed'}">
             ${escapeHTML(proj.status)}
@@ -384,7 +382,7 @@ function renderProjects() {
           <div class="project-links">
             ${proj.github && proj.github !== '#' ? `
               <a href="${escapeHTML(proj.github)}" target="_blank" rel="noopener" class="icon-link-btn">
-                <i data-lucide="github"></i> Code
+                ${brandIcon('github', 16)} Code
               </a>
             ` : ''}
             ${proj.demo && proj.demo !== '#' ? `
@@ -507,12 +505,11 @@ function renderFooter() {
   const copyName = document.getElementById('footer-copy-name');
   if (copyName) copyName.textContent = p.name;
 
-  const socialLinks = document.getElementById('footer-socials');
-  if (socialLinks) {
-    socialLinks.innerHTML = `
-      <a href="mailto:${encodeURIComponent(p.email)}" class="social-link" title="Direct Email"><i data-lucide="mail"></i></a>
-      ${p.github ? `<a href="${escapeHTML(p.github)}" target="_blank" rel="noopener" class="social-link" title="GitHub"><i data-lucide="github"></i></a>` : ''}
-      ${p.linkedin ? `<a href="${escapeHTML(p.linkedin)}" target="_blank" rel="noopener" class="social-link" title="LinkedIn"><i data-lucide="linkedin"></i></a>` : ''}
+  const footerSocials = document.getElementById('footer-socials');
+  if (footerSocials) {
+    footerSocials.innerHTML = `
+      <a href="mailto:${encodeURIComponent(p.email)}" class="social-link" title="Direct Email" aria-label="Email"><i data-lucide="mail"></i></a>
+      ${socialLinks(p).map((s) => `<a href="${escapeHTML(s.url)}" target="_blank" rel="noopener" class="social-link" title="${s.label}" aria-label="${s.label}">${brandIcon(s.key, 20)}</a>`).join('')}
     `;
   }
 }
@@ -531,7 +528,7 @@ function openProjectModal(projectId) {
 
   body.innerHTML = `
     <div style="margin-bottom: 1.5rem">
-      <img src="${escapeHTML(proj.image || 'assets/images/project-nexttrip.svg')}" alt="${escapeHTML(proj.title)}" style="width:100%; max-height:280px; object-fit:cover; border-radius:12px; border:1px solid var(--border-subtle)">
+      <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}" style="width:100%; max-height:280px; object-fit:cover; border-radius:12px; border:1px solid var(--border-subtle)">
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1.2rem">
@@ -573,7 +570,7 @@ function openProjectModal(projectId) {
     <div class="modal-actions" style="display:flex; gap:1rem; padding-top:1rem; border-top:1px solid var(--border-subtle)">
       ${proj.github && proj.github !== '#' ? `
         <a href="${escapeHTML(proj.github)}" target="_blank" rel="noopener" class="btn-primary" style="font-size:0.88rem; padding:0.6rem 1.2rem">
-          <i data-lucide="github"></i> View GitHub Repository
+          ${brandIcon('github', 16)} View GitHub Repository
         </a>
       ` : ''}
       ${proj.demo && proj.demo !== '#' ? `
@@ -596,19 +593,72 @@ function closeProjectModal() {
   if (modal) modal.classList.remove('active');
 }
 
+const PDFJS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+let pdfJsPromise = null;
+let renderedCvUrl = '';
+
+function loadPdfJs() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  if (!pdfJsPromise) {
+    pdfJsPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `${PDFJS_BASE}pdf.min.js`;
+      script.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = `${PDFJS_BASE}pdf.worker.min.js`;
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = () => {
+        pdfJsPromise = null;
+        reject(new Error('PDF.js failed to load'));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return pdfJsPromise;
+}
+
+// Draws CV pages, no plugin needed
+async function renderCvPreview(container) {
+  if (renderedCvUrl === cvUrl && container.childElementCount) return;
+  const url = cvUrl;
+  container.innerHTML = '<p class="cv-loading">Loading CV…</p>';
+  try {
+    const pdfjs = await loadPdfJs();
+    const pdf = await pdfjs.getDocument(url).promise;
+    if (url !== cvUrl) return;
+    container.innerHTML = '';
+    const cssWidth = Math.max(280, container.clientWidth - 24);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const scale = (cssWidth / page.getViewport({ scale: 1 }).width) * dpr;
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      canvas.className = 'cv-page';
+      canvas.setAttribute('aria-label', `CV page ${n}`);
+      container.appendChild(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport, intent: 'print' }).promise;
+    }
+    renderedCvUrl = url;
+  } catch (e) {
+    container.innerHTML = `<iframe src="${url}#view=FitH&navpanes=0" title="Faysal Mahmud CV"></iframe>`;
+    renderedCvUrl = url;
+  }
+}
+
 function openResumeModal() {
   const modal = document.getElementById('resume-modal');
   if (!modal) return;
 
   const preview = modal.querySelector('[data-cv-preview]');
-  const frame = modal.querySelector('[data-cv-frame]');
-  const canEmbedPdf = window.matchMedia('(hover: hover) and (min-width: 769px)').matches;
-  const showPreview = !!(cvUrl && preview && frame && canEmbedPdf);
-  if (showPreview && !frame.getAttribute('src')) frame.src = `${cvUrl}#view=FitH&navpanes=0`;
+  const showPreview = !!(cvUrl && preview);
   if (preview) preview.hidden = !showPreview;
   modal.querySelector('.resume-dialog')?.classList.toggle('has-cv-preview', showPreview);
 
   modal.classList.add('active');
+  if (showPreview) renderCvPreview(preview);
 }
 
 function closeResumeModal() {
@@ -955,6 +1005,42 @@ function showToast(message) {
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 4000);
+}
+
+const BRAND_ICONS = {
+  github: 'M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12',
+  linkedin: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  facebook: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z',
+  whatsapp: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z'
+};
+
+function brandIcon(name, size = 18) {
+  return `<svg class="brand-icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${BRAND_ICONS[name]}"/></svg>`;
+}
+
+function whatsappLink(value) {
+  const digits = String(value || '').replace(/\D/g, '');
+  return digits ? `https://wa.me/${digits}` : '';
+}
+
+function socialLinks(p) {
+  return [
+    { key: 'github', label: 'GitHub', url: p.github },
+    { key: 'linkedin', label: 'LinkedIn', url: p.linkedin },
+    { key: 'facebook', label: 'Facebook', url: p.facebook },
+    { key: 'whatsapp', label: 'WhatsApp', url: whatsappLink(p.whatsapp) }
+  ].filter((s) => s.url && s.url !== '#');
+}
+
+function renderHeroSocials() {
+  const wrap = document.getElementById('hero-socials');
+  const p = currentPortfolioData.personal;
+  if (!wrap || !p) return;
+  wrap.innerHTML = socialLinks(p).map((s) => `
+    <a href="${escapeHTML(s.url)}" target="_blank" rel="noopener" class="hero-social hero-social-${s.key}" aria-label="${s.label}" title="${s.label}">
+      ${brandIcon(s.key, 22)}
+    </a>
+  `).join('');
 }
 
 function highlightOwnName(authors) {

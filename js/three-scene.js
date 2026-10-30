@@ -616,7 +616,7 @@ class LaptopScreenDOM {
     return `
       ${this.head("01 · Profile", "About Me")}
       <div class="ls-profile">
-        <img src="${esc(p.avatar || "assets/images/demo-avatar.svg")}" alt="${esc(p.name)}" data-fallback="${esc((p.name || "").split(" ").map((s) => s[0]).join(""))}">
+        <img src="${esc(p.avatar || "assets/images/Profile.png")}" alt="${esc(p.name)}" data-fallback="${esc((p.name || "").split(" ").map((s) => s[0]).join(""))}">
         <div>
           <h3>${esc(p.name)}</h3>
           <p class="ls-mono ls-accent">${esc(p.department)} · ${esc(p.university)}</p>
