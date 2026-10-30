@@ -1,44 +1,24 @@
 let isAdminAuthenticated = false;
 let editingEducationId = null;
 let editingProjectId = null;
-let githubSession = null;
 
+// Editor only works locally
 function isLocalEditingHost(loc = window.location) {
   if (loc.protocol === 'file:') return true;
   const host = (loc.hostname || '').toLowerCase();
   return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '::1' || host.endsWith('.localhost');
 }
 
-function detectGithubRepo(loc = window.location) {
-  const host = (loc.hostname || '').toLowerCase();
-  if (!host.endsWith('.github.io')) return null;
-  const owner = host.slice(0, -'.github.io'.length);
-  const first = (loc.pathname || '/').split('/').filter(Boolean)[0];
-  const repo = first && !first.includes('.') ? first : host;
-  return { owner, repo, path: 'js/data.js' };
-}
-
-function usesGithubLogin() {
-  return !isLocalEditingHost() && !!detectGithubRepo();
-}
-
-function editorAvailable() {
-  return isLocalEditingHost() || usesGithubLogin();
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  if (!editorAvailable()) {
+  if (!isLocalEditingHost()) {
     safeStorage.remove('cse_admin_auth', true);
     return;
   }
 
-  document.documentElement.classList.add('admin-available');
-  if (usesGithubLogin()) document.documentElement.classList.add('admin-github');
+  document.documentElement.classList.add('admin-local');
 
-  if (isLocalEditingHost() && safeStorage.get('cse_admin_auth', true) === 'true') {
+  if (safeStorage.get('cse_admin_auth', true) === 'true') {
     enableAdminMode(false);
-  } else {
-    safeStorage.remove('cse_admin_auth', true);
   }
 
   window.addEventListener('keydown', (e) => {
@@ -53,26 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function toggleAdminAccess() {
-  if (!editorAvailable()) return;
+  if (!isLocalEditingHost()) return;
   if (isAdminAuthenticated) openAdminModal('profile');
   else openAuthModal();
 }
 
 function openAuthModal() {
-  if (!editorAvailable()) return;
+  if (!isLocalEditingHost()) return;
   const modal = document.getElementById('admin-auth-modal');
   const input = document.getElementById('admin-passcode-input');
-  const label = document.getElementById('admin-auth-label');
   const err = document.getElementById('admin-auth-error');
   if (!modal) return;
-  const github = usesGithubLogin();
-  if (label) label.textContent = github ? 'GitHub access token' : 'Password';
-  if (input) {
-    input.value = '';
-    input.placeholder = github ? 'github_pat_…' : '';
-    input.autocomplete = github ? 'off' : 'current-password';
-  }
   if (err) err.style.display = 'none';
+  if (input) input.value = '';
   modal.classList.add('active');
   input?.focus();
 }
@@ -121,11 +94,6 @@ async function verifyAdminPasscode() {
     }
   };
 
-  if (usesGithubLogin()) {
-    await verifyGithubToken(input ? input.value.trim() : '', showError);
-    return;
-  }
-
   let password;
   try {
     password = await readEnvPassword();
@@ -143,126 +111,22 @@ async function verifyAdminPasscode() {
   }
 }
 
-function githubHeaders(token) {
-  return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28'
-  };
-}
-
-// GitHub checks the token
-async function verifyGithubToken(token, showError) {
-  const repo = detectGithubRepo();
-  if (!token || !repo) {
-    showError('Login failed.');
-    return;
-  }
-
-  let info;
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo.owner}/${repo.repo}`, {
-      headers: githubHeaders(token),
-      cache: 'no-store'
-    });
-    if (!res.ok) {
-      showError('Login failed.');
-      return;
-    }
-    info = await res.json();
-  } catch (e) {
-    showError("Couldn't reach GitHub. Check your connection.");
-    return;
-  }
-
-  if (!info.permissions || !info.permissions.push) {
-    showError('Login failed.');
-    return;
-  }
-
-  githubSession = {
-    token,
-    owner: info.owner.login,
-    repo: info.name,
-    branch: info.default_branch || 'main',
-    path: repo.path
-  };
-  enableAdminMode(true);
-  closeAuthModal();
-  openAdminModal('profile');
-}
-
-function toBase64(text) {
-  const bytes = new TextEncoder().encode(text);
-  let binary = '';
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-  }
-  return btoa(binary);
-}
-
-// Commits data.js to GitHub
-async function publishToGithub() {
-  if (!githubSession) {
-    showToast('Log in on the live site to publish.');
-    return;
-  }
-
-  const buttons = document.querySelectorAll('[data-publish-btn]');
-  buttons.forEach((b) => { b.disabled = true; b.dataset.label = b.innerHTML; b.textContent = 'Publishing…'; });
-
-  const { token, owner, repo, branch, path } = githubSession;
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  try {
-    const current = await fetch(`${url}?ref=${encodeURIComponent(branch)}`, { headers: githubHeaders(token), cache: 'no-store' });
-    if (!current.ok) throw new Error('Could not read js/data.js from GitHub.');
-    const { sha } = await current.json();
-
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { ...githubHeaders(token), 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'Update portfolio content from admin panel',
-        content: toBase64(generateDataJsContent()),
-        sha,
-        branch
-      })
-    });
-    if (res.status === 401 || res.status === 403 || res.status === 404) {
-      throw new Error('Your token cannot save to this repository. Give it "Contents: Read and write" access.');
-    }
-    if (res.status === 409) throw new Error('data.js changed on GitHub just now. Click Publish again.');
-    if (!res.ok) throw new Error('GitHub rejected the update. Please try again.');
-
-    safeStorage.set('cse_portfolio_draft', `published:${Date.now()}`);
-    showToast('Published! Your live site updates in about 1–2 minutes.');
-  } catch (e) {
-    showToast(e.message || 'Publishing failed.');
-  } finally {
-    buttons.forEach((b) => { b.disabled = false; b.innerHTML = b.dataset.label; });
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-  }
-}
-
 function enableAdminMode(showFeedback = true) {
-  if (!editorAvailable()) return;
+  if (!isLocalEditingHost()) return;
   isAdminAuthenticated = true;
-  if (isLocalEditingHost()) safeStorage.set('cse_admin_auth', 'true', true);
+  safeStorage.set('cse_admin_auth', 'true', true);
   document.body.classList.add('admin-mode-active');
 
   const hud = document.getElementById('admin-hud-bar');
   if (hud) hud.style.display = 'flex';
 
   if (showFeedback) {
-    showToast(usesGithubLogin()
-      ? 'Admin mode on. Edit, then click Publish to update the live site.'
-      : 'Admin Mode Active. You can now edit portfolio details & export to GitHub!');
+    showToast('Admin Mode Active. You can now edit portfolio details & export to GitHub!');
   }
 }
 
 function exitAdminMode() {
   isAdminAuthenticated = false;
-  githubSession = null;
   safeStorage.remove('cse_admin_auth', true);
   document.body.classList.remove('admin-mode-active');
 
@@ -738,8 +602,6 @@ function resetToDemoData() {
 
 window.toggleAdminAccess = toggleAdminAccess;
 window.isLocalEditingHost = isLocalEditingHost;
-window.usesGithubLogin = usesGithubLogin;
-window.publishToGithub = publishToGithub;
 window.openAuthModal = openAuthModal;
 window.closeAuthModal = closeAuthModal;
 window.verifyAdminPasscode = verifyAdminPasscode;

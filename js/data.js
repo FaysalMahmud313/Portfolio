@@ -3,7 +3,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     name: "Faysal Mahmud",
     role: "Aspiring Software Engineer | Web Developer | AI/ML Research Enthusiast",
     tagline: "Computer Science and Engineering student at American International University-Bangladesh (AIUB). Building practical software projects, exploring emerging technologies, and solving real-world problems through programming and research.",
-    statusBadge: "🟢 Open for Software Engineering Internships & Research Collaborations",
+    statusBadge: "Open for Software Engineering Internships & Research Collaborations",
     availableForHire: true,
     avatar: "assets/images/demo-avatar.svg",
     resumeUrl: "#resume-preview",

@@ -51,10 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Visitors always get data.js
 function hasOwnerDraft() {
-  const draft = safeStorage.get('cse_portfolio_draft') || '';
-  if (draft === '1') return true;
-  const publishedAt = Number(draft.split(':')[1]);
-  return draft.startsWith('published:') && Date.now() - publishedAt < 15 * 60 * 1000;
+  return safeStorage.get('cse_portfolio_draft') === '1';
 }
 
 function loadPortfolioData() {
@@ -89,9 +86,7 @@ function savePortfolioData(newData) {
   if (typeof lucide !== 'undefined') lucide.createIcons();
   setupRevealAnimations();
   window.portfolioScene?.refreshContent();
-  showToast(window.usesGithubLogin && window.usesGithubLogin()
-    ? 'Saved as a draft. Click Publish to update the live site.'
-    : 'Portfolio updated successfully! Changes saved locally.');
+  showToast('Portfolio updated successfully! Changes saved locally.');
 }
 
 function renderAllSections() {
@@ -603,7 +598,7 @@ function setupTerminal() {
           &nbsp;&nbsp;<span style="color:var(--accent-cyan)">research</span>&nbsp;&nbsp;&nbsp;- ML, Explainable AI &amp; cybersecurity domains<br>
           &nbsp;&nbsp;<span style="color:var(--accent-cyan)">leadership</span>&nbsp;- AIUB R&amp;D Club &amp; Scout volunteering<br>
           &nbsp;&nbsp;<span style="color:var(--accent-cyan)">contact</span>&nbsp;&nbsp;&nbsp;&nbsp;- Verified email &amp; location<br>
-          &nbsp;&nbsp;<span style="color:var(--accent-cyan)">sudo hire</span>&nbsp;&nbsp;- Direct internship contact 🚀<br>
+          &nbsp;&nbsp;<span style="color:var(--accent-cyan)">sudo hire</span>&nbsp;&nbsp;- Direct internship contact<br>
           &nbsp;&nbsp;<span style="color:var(--accent-cyan)">clear</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clear terminal window
         `;
         break;
@@ -660,7 +655,7 @@ function setupTerminal() {
         break;
 
       case 'sudo hire':
-        outLine.innerHTML = `<span style="color:var(--accent-emerald); font-weight:bold">🎉 DIRECT CONNECTION INITIATED!</span> Open for software engineering internships and research collaborations.<br>Contact email: <a href="mailto:${escapeHTML(p.email)}" style="color:var(--accent-cyan)">${escapeHTML(p.email)}</a>`;
+        outLine.innerHTML = `<span style="color:var(--accent-emerald); font-weight:bold">DIRECT CONNECTION INITIATED!</span> Open for software engineering internships and research collaborations.<br>Contact email: <a href="mailto:${escapeHTML(p.email)}" style="color:var(--accent-cyan)">${escapeHTML(p.email)}</a>`;
         break;
 
       case 'clear':

@@ -19,7 +19,7 @@
   <meta property="og:type" content="website">
 
   <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b1220'/><text x='50' y='64' text-anchor='middle' font-family='monospace' font-size='44' font-weight='700' fill='%2360a5fa'>FM</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -258,7 +258,7 @@
               <button class="terminal-chip-btn" onclick="runTerminalCommand('projects')">projects</button>
               <button class="terminal-chip-btn" onclick="runTerminalCommand('research')">research</button>
               <button class="terminal-chip-btn" onclick="runTerminalCommand('leadership')">leadership</button>
-              <button class="terminal-chip-btn" onclick="runTerminalCommand('sudo hire')">sudo hire 🚀</button>
+              <button class="terminal-chip-btn" onclick="runTerminalCommand('sudo hire')">sudo hire</button>
               <button class="terminal-chip-btn" onclick="runTerminalCommand('clear')">clear</button>
             </div>
           </div>
@@ -499,10 +499,6 @@
     <button class="hud-btn" onclick="openAdminModal('projects')">
       <i data-lucide="folder-plus"></i> Edit Projects
     </button>
-    <button class="hud-btn admin-github-only" data-publish-btn onclick="publishToGithub()"
-      style="background:linear-gradient(135deg,var(--accent-emerald),#059669); color:#000; font-weight:700">
-      <i data-lucide="upload-cloud"></i> Publish Live
-    </button>
     <button class="hud-btn" onclick="openAdminModal('export')"
       style="background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); color:#000; font-weight:700">
       <i data-lucide="download"></i> Export for GitHub
@@ -526,7 +522,7 @@
       <div class="modal-body">
         <form onsubmit="verifyAdminPasscode(); return false;">
           <div class="form-group" style="margin-bottom:1rem">
-            <label for="admin-passcode-input" id="admin-auth-label">Password</label>
+            <label for="admin-passcode-input">Password</label>
             <div class="password-field">
               <input type="password" id="admin-passcode-input" class="form-control" autocomplete="current-password"
                 required>
@@ -567,13 +563,13 @@
       </div>
 
       <div class="modal-tabs">
-        <button class="modal-tab-btn active" data-tab="profile" onclick="switchAdminTab('profile')">👤 Profile &amp;
+        <button class="modal-tab-btn active" data-tab="profile" onclick="switchAdminTab('profile')">Profile &amp;
           Picture</button>
-        <button class="modal-tab-btn" data-tab="education" onclick="switchAdminTab('education')">🎓 College &amp;
+        <button class="modal-tab-btn" data-tab="education" onclick="switchAdminTab('education')">College &amp;
           University</button>
-        <button class="modal-tab-btn" data-tab="projects" onclick="switchAdminTab('projects')">🚀 Projects
+        <button class="modal-tab-btn" data-tab="projects" onclick="switchAdminTab('projects')">Projects
           Showcase</button>
-        <button class="modal-tab-btn" data-tab="export" onclick="switchAdminTab('export')">📦 GitHub Sync &amp;
+        <button class="modal-tab-btn" data-tab="export" onclick="switchAdminTab('export')">GitHub Sync &amp;
           Export</button>
       </div>
 
@@ -594,7 +590,7 @@
           <div class="form-group" style="margin-bottom:1.2rem">
             <label for="admin-status">Hero Status Badge</label>
             <input type="text" id="admin-status" class="form-control"
-              placeholder="🟢 Open for Software Engineering Internships">
+              placeholder="Open for Software Engineering Internships">
           </div>
 
           <div class="form-group" style="margin-bottom:1.2rem">
@@ -824,20 +820,6 @@
         </div>
 
         <div class="tab-pane" id="tab-export">
-          <div class="admin-github-only"
-            style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.35); border-radius:10px; padding:1.2rem; margin-bottom:1.5rem">
-            <h4 style="color:var(--accent-emerald); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem">
-              Publish to your live site
-            </h4>
-            <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:0.9rem">
-              Saves all your edits to <code>js/data.js</code> in your GitHub repository. GitHub Pages updates the live
-              site in about 1–2 minutes.
-            </p>
-            <button class="btn-primary" data-publish-btn onclick="publishToGithub()">
-              <i data-lucide="upload-cloud"></i> Publish Live
-            </button>
-          </div>
-
           <div
             style="background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.3); border-radius:10px; padding:1.2rem; margin-bottom:1.5rem">
             <h4 style="color:var(--accent-cyan); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem">
