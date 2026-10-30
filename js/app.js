@@ -49,19 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
   setupRevealAnimations();
 });
 
+// Visitors always get data.js
+function hasOwnerDraft() {
+  const draft = safeStorage.get('cse_portfolio_draft') || '';
+  if (draft === '1') return true;
+  const publishedAt = Number(draft.split(':')[1]);
+  return draft.startsWith('published:') && Date.now() - publishedAt < 15 * 60 * 1000;
+}
+
 function loadPortfolioData() {
-  const currentVersion = 'faysal_mahmud_cse_v2';
-  const savedVersion = safeStorage.get('portfolio_data_version');
   const saved = safeStorage.get('cse_portfolio_data');
 
-  if (saved && savedVersion === currentVersion) {
+  if (saved && hasOwnerDraft()) {
     try {
       const parsed = JSON.parse(saved);
-      if (parsed.personal && parsed.personal.name === 'Faysal Mahmud') {
-        if (parsed.admin && 'passcode' in parsed.admin) {
-          delete parsed.admin.passcode;
-          safeStorage.set('cse_portfolio_data', JSON.stringify(parsed));
-        }
+      if (parsed.personal && parsed.projects) {
+        if (parsed.admin) delete parsed.admin.passcode;
         currentPortfolioData = parsed;
         return;
       }
@@ -70,21 +73,25 @@ function loadPortfolioData() {
     }
   }
 
+  safeStorage.remove('cse_portfolio_data');
+  safeStorage.remove('cse_portfolio_draft');
+  safeStorage.remove('portfolio_data_version');
   currentPortfolioData = JSON.parse(JSON.stringify(window.DEFAULT_PORTFOLIO_DATA || {}));
   if (currentPortfolioData.admin) delete currentPortfolioData.admin.passcode;
-  safeStorage.set('portfolio_data_version', currentVersion);
-  safeStorage.set('cse_portfolio_data', JSON.stringify(currentPortfolioData));
 }
 
 function savePortfolioData(newData) {
   currentPortfolioData = newData;
   safeStorage.set('cse_portfolio_data', JSON.stringify(newData));
+  safeStorage.set('cse_portfolio_draft', '1');
   renderAllSections();
   setup3DCardTilt();
   if (typeof lucide !== 'undefined') lucide.createIcons();
   setupRevealAnimations();
   window.portfolioScene?.refreshContent();
-  showToast('Portfolio updated successfully! Changes saved locally.');
+  showToast(window.usesGithubLogin && window.usesGithubLogin()
+    ? 'Saved as a draft. Click Publish to update the live site.'
+    : 'Portfolio updated successfully! Changes saved locally.');
 }
 
 function renderAllSections() {

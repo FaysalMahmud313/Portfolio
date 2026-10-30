@@ -499,6 +499,10 @@
     <button class="hud-btn" onclick="openAdminModal('projects')">
       <i data-lucide="folder-plus"></i> Edit Projects
     </button>
+    <button class="hud-btn admin-github-only" data-publish-btn onclick="publishToGithub()"
+      style="background:linear-gradient(135deg,var(--accent-emerald),#059669); color:#000; font-weight:700">
+      <i data-lucide="upload-cloud"></i> Publish Live
+    </button>
     <button class="hud-btn" onclick="openAdminModal('export')"
       style="background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); color:#000; font-weight:700">
       <i data-lucide="download"></i> Export for GitHub
@@ -522,7 +526,7 @@
       <div class="modal-body">
         <form onsubmit="verifyAdminPasscode(); return false;">
           <div class="form-group" style="margin-bottom:1rem">
-            <label for="admin-passcode-input">Password</label>
+            <label for="admin-passcode-input" id="admin-auth-label">Password</label>
             <div class="password-field">
               <input type="password" id="admin-passcode-input" class="form-control" autocomplete="current-password"
                 required>
@@ -820,6 +824,20 @@
         </div>
 
         <div class="tab-pane" id="tab-export">
+          <div class="admin-github-only"
+            style="background:rgba(16, 185, 129, 0.08); border:1px solid rgba(16, 185, 129, 0.35); border-radius:10px; padding:1.2rem; margin-bottom:1.5rem">
+            <h4 style="color:var(--accent-emerald); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem">
+              Publish to your live site
+            </h4>
+            <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:0.9rem">
+              Saves all your edits to <code>js/data.js</code> in your GitHub repository. GitHub Pages updates the live
+              site in about 1–2 minutes.
+            </p>
+            <button class="btn-primary" data-publish-btn onclick="publishToGithub()">
+              <i data-lucide="upload-cloud"></i> Publish Live
+            </button>
+          </div>
+
           <div
             style="background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.3); border-radius:10px; padding:1.2rem; margin-bottom:1.5rem">
             <h4 style="color:var(--accent-cyan); font-weight:700; font-size:1.05rem; margin-bottom:0.5rem">

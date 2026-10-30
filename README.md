@@ -1,4 +1,4 @@
-# 3D Web Portfolio — Faysal Mahmud
+# 🚀 3D Web Portfolio — Faysal Mahmud
 
 Interactive **3D Web Portfolio** for **Faysal Mahmud**, Computer Science and Engineering (CSE) student at **American International University-Bangladesh (AIUB)**.
 
@@ -8,12 +8,12 @@ Built with **Three.js WebGL**, modern cyber glassmorphism, responsive 3D card pe
 
 ---
 
-##  Key Sections & Verified Features
+## 🌟 Key Sections & Verified Features
 
-- ** Interactive 3D Developer Desk**: A procedurally modelled laptop (no external model files) on a graphite desk. The lid opens and the screen boots into **Faysal OS** — a real, scrollable HTML screen locked onto the 3D display, built live from `data.js`. The tabs under the laptop (Home, About, Projects, Skills, Research, Leadership, Terminal) switch what the screen shows; Projects is a scrollable image gallery whose Details buttons open the full project modal, and Terminal includes a working contact form. Power, focus and reset controls sit outside the laptop; turning the display off never affects the website itself. Lighter rendering on phones, reduced-motion support, and a static fallback when WebGL is unavailable.
+- **💻 Interactive 3D Developer Desk**: A procedurally modelled laptop (no external model files) on a graphite desk. The lid opens and the screen boots into **Faysal OS** — a real, scrollable HTML screen locked onto the 3D display, built live from `data.js`. The tabs under the laptop (Home, About, Projects, Skills, Research, Leadership, Terminal) switch what the screen shows; Projects is a scrollable image gallery whose Details buttons open the full project modal, and Terminal includes a working contact form. Power, focus and reset controls sit outside the laptop; turning the display off never affects the website itself. Lighter rendering on phones, reduced-motion support, and a static fallback when WebGL is unavailable.
 - **🎓 Academic Track Record**: Dedicated section for American International University-Bangladesh (AIUB), B.Sc. in Computer Science and Engineering, core CS coursework, and academic honors.
 - **💻 Technical Competencies Matrix**: Clean, categorized presentation of Programming Languages, Tools, Platforms, Research Domains, and Soft Skills without arbitrary proficiency percentage claims.
-- ** Featured Projects (Strongest Completed First)**:
+- **🚀 Featured Projects (Strongest Completed First)**:
   1. **NextTrip — Travel Management System**: Comprehensive travel planning, booking workflows, and itinerary management. *(Completed)*
   2. **FlowSense — AI Cash-Flow Co-Pilot & Financial Platform**: FinTechathon 2026 team project featuring shortage arithmetic, recovery plan calculations, and approval safety checks. *(Competition Prototype)*
   3. **Bank Management System**: Java-based banking application demonstrating clean OOP principles and transaction handling. *(Completed)*
@@ -26,15 +26,15 @@ Built with **Three.js WebGL**, modern cyber glassmorphism, responsive 3D card pe
 - **🔬 Dedicated Research & Publications**:
   - Highlights core research areas: Health Risk Prediction, Explainable AI (XAI), SHAP Feature Interpretation, EV Charging Cybersecurity, Network Intrusion Detection, and AI Ethics.
   - Dedicated cards for the **2 reported peer-reviewed publications** ready for manual linking of verified paper titles, conference/journal names, and DOIs.
-- ** Leadership, Volunteering & Achievements**:
+- **🏆 Leadership, Volunteering & Achievements**:
   - **AIUB R&D Club (Organizer)**: Academic research seminars (Prof. Dr. Nowshad Amin, Prof. Pushp Lata of BITS Pilani, Dr. Md. Saef Ullah Miah), Erasmus Mundus, and research methodology workshops.
   - **Scout Volunteering (~3 Years)**: Community service, medical camp serving >1,300 patients, relief distribution, and served as Team Leader in two camps.
   - **9 Documented Achievements & Competitions**: Presentation wins at State University and Southeast University, University Physics Poster Winner, GP FutureMakers Round 2, CUET 3MT, Sciblitz 2.0, MOS State Championship, and SANSO Scout Jamboree.
 - **💻 Recruiter Interactive Terminal**: Recruiter terminal simulator in the About section with commands: `whoami`, `education`, `skills`, `projects`, `research`, `leadership`, `contact`, `sudo hire 🚀`, `clear`.
-- ** Secret Owner-Only Admin Portal**:
+- **🔐 Secret Owner-Only Admin Portal**:
   - Hidden from regular visitors.
   - Activated via keyboard shortcut (**`Ctrl + Shift + A`** or **`Cmd + Shift + A`**) or by clicking the lock icon in the footer/navbar.
-  - Works only on your local copy. The password is `ADMIN_PASSWORD` in your local `.env` file, which is gitignored and never pushed (see **Admin Password** below).
+  - **Live site:** log in with a GitHub fine-grained access token and click **Publish Live**. **On your PC:** log in with `ADMIN_PASSWORD` from your gitignored `.env` (see **Admin Password** below).
   - In-place editing: Click the "Edit" badge on any card.
   - Image uploader: Upload any personal photo or project screenshot from your laptop with instant preview.
   - **1-Click GitHub Export**: Generates an updated `data.js` file ready to be committed to your repository so changes are visible to visitors worldwide.
@@ -164,7 +164,9 @@ When you are ready to link your GitHub repos, LinkedIn profile, or publication D
 ### 🔑 Admin Password
 - Your password lives in **`.env`** (next to `index.html`) as `ADMIN_PASSWORD=your-password`. To change it, edit that one line and save. That's all.
 - `.env` is listed in `.gitignore`, so it is **never committed or pushed**. Only `.env.example` (a placeholder) is committed.
-- **The live site has no admin login at all.** GitHub Pages never receives `.env`, and the editor buttons are hidden unless the site runs on `localhost`. Visitors can't log in, and even if someone forced the editor open in their own browser, changes would only affect their own copy. The live site changes only when **you** push a new `js/data.js`, so your GitHub account is the real protection.
+- **On the live site** the login asks for a **GitHub access token** instead. GitHub's own servers check it, and **Publish Live** saves your edits to `js/data.js` in the repo, after which GitHub Pages updates the site in 1–2 minutes. The token is kept only in the open tab (never saved), so you paste it each time you log in.
+- **Create the token:** GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token → Repository access: **Only select repositories → Portfolio** → Repository permissions: **Contents: Read and write**. Copy it once and keep it in a password manager.
+- **Change or revoke it:** delete the token on that same GitHub page and generate a new one. The old one stops working immediately.
 - Before every commit, run `git status` and make sure `.env` is **not** listed.
 
 ### Method 2: Direct File Editing

@@ -3815,7 +3815,8 @@ button:focus-visible,
   }
 }
 
-html:not(.admin-local) .admin-entry {
+html:not(.admin-available) .admin-entry,
+html:not(.admin-github) .admin-github-only {
   display: none !important;
 }
 
