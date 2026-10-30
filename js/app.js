@@ -7,7 +7,7 @@ const safeStorage = {
     try { return (session ? sessionStorage : localStorage).getItem(key); } catch (e) { return null; }
   },
   set(key, value, session = false) {
-    try { (session ? sessionStorage : localStorage).setItem(key, value); } catch (e) {  }
+    try { (session ? sessionStorage : localStorage).setItem(key, value); return true; } catch (e) { return false; }
   },
   remove(key, session = false) {
     try { (session ? sessionStorage : localStorage).removeItem(key); } catch (e) {  }
@@ -47,7 +47,70 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   setupRevealAnimations();
+  setupCvDownload();
 });
+
+let cvUrl = '';
+
+function normalizeCvUrl(raw) {
+  raw = String(raw || '').trim();
+  if (!raw || raw.startsWith('#')) return '';
+  return /%[0-9a-f]{2}/i.test(raw) ? raw : encodeURI(raw);
+}
+
+// Shows CV buttons if file exists
+async function setupCvDownload() {
+  const candidates = [
+    normalizeCvUrl((currentPortfolioData.personal || {}).resumeUrl),
+    normalizeCvUrl(((window.DEFAULT_PORTFOLIO_DATA || {}).personal || {}).resumeUrl)
+  ].filter((u, i, all) => u && all.indexOf(u) === i);
+
+  let url = '';
+  let external = false;
+  for (const candidate of candidates) {
+    const isExternal = /^https?:\/\//i.test(candidate) && !candidate.startsWith(location.origin);
+    if (isExternal) {
+      url = candidate;
+      external = true;
+      break;
+    }
+    try {
+      const res = await fetch(candidate, { method: 'HEAD', cache: 'no-store' });
+      if (res.ok) {
+        url = candidate;
+        break;
+      }
+    } catch (e) { }
+  }
+
+  const available = !!url;
+  if (cvUrl !== url) {
+    const frame = document.querySelector('[data-cv-frame]');
+    if (frame) frame.removeAttribute('src');
+  }
+  cvUrl = url;
+
+  document.querySelectorAll('[data-cv-open]').forEach((a) => {
+    a.hidden = !available;
+    if (available) a.href = url;
+  });
+
+  const fileName = decodeURIComponent(url.split('/').pop() || '') || 'CV.pdf';
+  document.querySelectorAll('[data-cv-download]').forEach((a) => {
+    a.hidden = !available;
+    if (!available) return;
+    a.href = url;
+    if (external) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.removeAttribute('download');
+    } else {
+      a.setAttribute('download', fileName);
+      a.removeAttribute('target');
+    }
+  });
+  document.querySelector('.hero-cta')?.classList.toggle('has-cv', available);
+}
 
 // Visitors always get data.js
 function hasOwnerDraft() {
@@ -79,14 +142,17 @@ function loadPortfolioData() {
 
 function savePortfolioData(newData) {
   currentPortfolioData = newData;
-  safeStorage.set('cse_portfolio_data', JSON.stringify(newData));
+  const saved = safeStorage.set('cse_portfolio_data', JSON.stringify(newData));
   safeStorage.set('cse_portfolio_draft', '1');
   renderAllSections();
   setup3DCardTilt();
   if (typeof lucide !== 'undefined') lucide.createIcons();
   setupRevealAnimations();
+  setupCvDownload();
   window.portfolioScene?.refreshContent();
-  showToast('Portfolio updated successfully! Changes saved locally.');
+  showToast(saved
+    ? 'Portfolio updated successfully! Changes saved locally.'
+    : 'Browser storage is full, so this change will be lost on reload. Export data.js now, or use smaller images.');
 }
 
 function renderAllSections() {
@@ -369,23 +435,23 @@ function renderResearch() {
           <span>${escapeHTML(pub.status)}</span>
         </div>
         <h3 class="pub-title">${escapeHTML(pub.title)}</h3>
-        <div class="pub-authors">${escapeHTML(pub.authors)}</div>
-        <div class="pub-venue">${escapeHTML(pub.conference)} (${escapeHTML(pub.year)})</div>
+        <div class="pub-authors">${highlightOwnName(pub.authors)}</div>
+        <div class="pub-venue">${escapeHTML(pub.conference)}${pub.year ? ` (${escapeHTML(pub.year)})` : ''}</div>
         <div class="pub-focus">
           <strong>Research Focus:</strong> ${escapeHTML(pub.focus)}
         </div>
-        <div style="font-size:0.78rem; color:var(--text-dim); margin-bottom:0.8rem">
-          ℹ️ <em>${escapeHTML(pub.note || '')}</em>
-        </div>
-        <div class="pub-links">
-          ${pub.link && pub.link !== '#' ? `
+        ${pub.note ? `
+          <div style="font-size:0.78rem; color:var(--text-dim); margin-bottom:0.8rem">
+            <em>${escapeHTML(pub.note)}</em>
+          </div>
+        ` : ''}
+        ${pub.link && pub.link !== '#' ? `
+          <div class="pub-links">
             <a href="${escapeHTML(pub.link)}" target="_blank" rel="noopener" class="icon-link-btn">
               <i data-lucide="external-link"></i> View Publication / DOI
             </a>
-          ` : `
-            <span style="font-size:0.78rem; font-family:var(--font-mono); color:var(--accent-cyan)">[Author will link paper &amp; DOI manually]</span>
-          `}
-        </div>
+          </div>
+        ` : ''}
       </div>
     `).join('');
   }
@@ -424,7 +490,7 @@ function renderCertifications() {
     <div class="cert-card">
       <div class="cert-title">${escapeHTML(c.title)}</div>
       <div class="cert-issuer">${escapeHTML(c.issuer)}</div>
-      <div class="cert-meta">${escapeHTML(c.date)} • ${escapeHTML(c.id)}</div>
+      <div class="cert-meta">${escapeHTML([c.date, c.id].filter(Boolean).join(' • '))}</div>
       ${c.link && c.link !== '#' ? `
         <a href="${escapeHTML(c.link)}" target="_blank" rel="noopener" class="icon-link-btn" style="margin-top:0.5rem; font-size:0.78rem">
           <i data-lucide="external-link"></i> View Certificate / Link
@@ -533,6 +599,15 @@ function closeProjectModal() {
 function openResumeModal() {
   const modal = document.getElementById('resume-modal');
   if (!modal) return;
+
+  const preview = modal.querySelector('[data-cv-preview]');
+  const frame = modal.querySelector('[data-cv-frame]');
+  const canEmbedPdf = window.matchMedia('(hover: hover) and (min-width: 769px)').matches;
+  const showPreview = !!(cvUrl && preview && frame && canEmbedPdf);
+  if (showPreview && !frame.getAttribute('src')) frame.src = `${cvUrl}#view=FitH&navpanes=0`;
+  if (preview) preview.hidden = !showPreview;
+  modal.querySelector('.resume-dialog')?.classList.toggle('has-cv-preview', showPreview);
+
   modal.classList.add('active');
 }
 
@@ -625,11 +700,11 @@ function setupTerminal() {
           • <strong>FlowSense</strong>: AI Cash-Flow Co-Pilot &amp; Financial Rescue Platform (FinTechathon 2026)<br>
           • <strong>Bank Management System</strong>: Java-based banking application demonstrating OOP<br>
           • <strong>Tourism Management System</strong>: C# Windows Forms desktop application with SQL Server<br>
-          • <strong>RA-BRI</strong>: Rheumatoid Arthritis Risk Prediction (NHANES, N=13,273, SHAP)<br>
-          • <strong>EV Intrusion Detection</strong>: Cybersecurity &amp; ML in EV Charging Networks (CICEV2023)<br>
           • <strong>AI-Generated Faces</strong>: Survey research on digital human rights online (N=120 BD)<br>
           • <strong>AI DeskBuddy</strong>: ESP32-S3 smart desk companion with OLED expressions<br>
-          • <strong>Faysal FileHub</strong>: ESP32-S3 &amp; W5500 Ethernet personal file server concept
+          • <strong>Faysal FileHub</strong>: ESP32-S3 &amp; W5500 Ethernet personal file server concept<br>
+          • <strong>ResearchFlow</strong>: Full-stack research workspace (FastAPI, React, TypeScript)<br>
+          • <strong>Online Medicine Shop</strong>: PHP MVC &amp; MySQL team web shop
         `;
         break;
 
@@ -639,7 +714,8 @@ function setupTerminal() {
           • Explainable Artificial Intelligence (XAI) &amp; SHAP-Based Feature Interpretation<br>
           • EV Charging Station Cybersecurity &amp; Intrusion Detection (CICEV2023)<br>
           • AI Ethics &amp; Online Human Rights (Empirical Survey)<br>
-          • Reported peer-reviewed publications: 2 Papers
+          • Phishing URL Detection with SHAP (1,082,664 URLs, 8 sources)<br>
+          • Conference papers: 2, presented at ICACT, Nepal
         `;
         break;
 
@@ -879,6 +955,10 @@ function showToast(message) {
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 4000);
+}
+
+function highlightOwnName(authors) {
+  return escapeHTML(authors).replace(/F\. Mahmud|Faysal Mahmud/g, (m) => `<strong style="color:#fff">${m}</strong>`);
 }
 
 function escapeHTML(str) {

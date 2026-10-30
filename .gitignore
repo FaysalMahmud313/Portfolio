@@ -1,6 +1,6 @@
 .env
 .env.*
-!.env.example
+admin.env
 
 portfolio-backup-*.json
 

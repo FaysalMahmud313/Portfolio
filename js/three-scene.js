@@ -700,7 +700,7 @@ class LaptopScreenDOM {
     const areas = r.areas || [];
     const pubs = r.publications || [];
     return `
-      ${this.head("04 · Research", "Research & Publications", `${areas.length} focus areas · ${pubs.length} reported publications`)}
+      ${this.head("04 · Research", "Research & Publications", `${areas.length} focus areas · ${pubs.length} conference papers`)}
       <div class="ls-grid ls-grid-wide">
         ${areas.map((a) => `
           <article class="ls-card ls-pad">
@@ -709,7 +709,7 @@ class LaptopScreenDOM {
           </article>`).join("")}
       </div>
       ${pubs.length ? `
-        <h4 class="ls-subhead">Peer-reviewed publications (reported)</h4>
+        <h4 class="ls-subhead">Conference papers</h4>
         ${pubs.map((pub) => `
           <article class="ls-card ls-pad ls-pub">
             <p class="ls-card-kicker ls-violet">${esc(pub.status)}</p>

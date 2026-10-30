@@ -114,6 +114,9 @@
           <a href="#contact" class="btn-secondary">
             <i data-lucide="mail"></i> Get In Touch
           </a>
+          <a href="#" class="btn-secondary" data-cv-download hidden>
+            <i data-lucide="download"></i> Download CV
+          </a>
         </div>
 
         <div class="hero-stats-ribbon" id="hero-stats-ribbon">
@@ -194,7 +197,7 @@
         <div class="about-card tilt-card" data-tilt>
           <div class="about-avatar-row">
             <div class="avatar-frame">
-              <img src="assets/images/demo-avatar.svg" alt="Faysal Mahmud Avatar" id="about-avatar-img">
+              <img src="assets/images/Profile.png" alt="Faysal Mahmud" id="about-avatar-img">
             </div>
             <div>
               <h3 style="font-size:1.4rem; font-weight:700; color:#fff" id="about-name">Faysal Mahmud</h3>
@@ -328,8 +331,8 @@
       <div class="section-header">
         <span class="section-tag">// 05. Research &amp; Publications</span>
         <h2 class="section-title">Research &amp; Publications</h2>
-        <p class="section-desc">Empirical investigations in explainable AI, machine learning health risk prediction, and
-          EV cybersecurity.</p>
+        <p class="section-desc">Explainable machine learning for intrusion and phishing detection, health risk
+          prediction, and EV cybersecurity.</p>
       </div>
 
       <div style="margin-bottom: 2rem">
@@ -346,7 +349,7 @@
         <h3
           style="font-size:1.35rem; font-weight:700; color:#fff; margin-bottom:1.2rem; display:flex; align-items:center; gap:0.5rem">
           <i data-lucide="book-open" style="color:var(--accent-purple)"></i>
-          <span>Peer-Reviewed Publications (Reported)</span>
+          <span>Conference Papers</span>
         </h3>
         <div class="publications-container" id="publications-list">
         </div>
@@ -427,6 +430,10 @@
               </div>
             </div>
           </div>
+
+          <a href="#" class="btn-primary" data-cv-download hidden>
+            <i data-lucide="download"></i> Download CV
+          </a>
         </div>
 
         <form class="contact-form" id="contact-form">
@@ -499,6 +506,9 @@
     <button class="hud-btn" onclick="openAdminModal('projects')">
       <i data-lucide="folder-plus"></i> Edit Projects
     </button>
+    <button class="hud-btn" onclick="openAdminModal('achievements')">
+      <i data-lucide="award"></i> Edit Achievements
+    </button>
     <button class="hud-btn" onclick="openAdminModal('export')"
       style="background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); color:#000; font-weight:700">
       <i data-lucide="download"></i> Export for GitHub
@@ -569,6 +579,7 @@
           University</button>
         <button class="modal-tab-btn" data-tab="projects" onclick="switchAdminTab('projects')">Projects
           Showcase</button>
+        <button class="modal-tab-btn" data-tab="achievements" onclick="switchAdminTab('achievements')">Achievements</button>
         <button class="modal-tab-btn" data-tab="export" onclick="switchAdminTab('export')">GitHub Sync &amp;
           Export</button>
       </div>
@@ -645,6 +656,11 @@
               <input type="url" id="admin-linkedin" class="form-control"
                 placeholder="https://linkedin.com/in/your-username">
             </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:1.2rem">
+            <label for="admin-resume">CV File (path in the project or a link)</label>
+            <input type="text" id="admin-resume" class="form-control" placeholder="assets/cv/Faysal Mahmud - CV.pdf">
           </div>
 
           <div style="display:flex; justify-content:flex-end; gap:0.8rem; margin-top:1.5rem">
@@ -819,6 +835,54 @@
           </div>
         </div>
 
+        <div class="tab-pane" id="tab-achievements">
+          <div style="margin-bottom:1.5rem">
+            <h4 style="color:#fff; font-size:1.05rem; margin-bottom:0.75rem">Current Achievements</h4>
+            <div id="admin-achievements-items"></div>
+          </div>
+
+          <div style="background:#0a0e1a; border:1px solid var(--border-subtle); padding:1.5rem; border-radius:12px">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+              <h4 id="admin-ach-form-title" style="color:#fff; font-size:1rem; font-weight:700">Add Achievement</h4>
+              <button class="hud-btn" onclick="resetAchievementForm()">+ New Blank</button>
+            </div>
+
+            <div class="form-grid" style="display:grid; grid-template-columns: 1.2fr 1fr; gap:1rem; margin-bottom:1rem">
+              <div class="form-group">
+                <label for="admin-ach-title">Achievement Title</label>
+                <input type="text" id="admin-ach-title" class="form-control"
+                  placeholder="e.g. Winner, Abstract Presentation Competition">
+              </div>
+              <div class="form-group">
+                <label for="admin-ach-issuer">Organizer / Event</label>
+                <input type="text" id="admin-ach-issuer" class="form-control" placeholder="e.g. State University">
+              </div>
+            </div>
+
+            <div class="form-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1rem">
+              <div class="form-group">
+                <label for="admin-ach-date">Date / Year</label>
+                <input type="text" id="admin-ach-date" class="form-control" placeholder="e.g. 2025">
+              </div>
+              <div class="form-group">
+                <label for="admin-ach-detail">Short Detail (Optional)</label>
+                <input type="text" id="admin-ach-detail" class="form-control" placeholder="e.g. First Place">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem">
+              <label for="admin-ach-link">Certificate / Link (Optional)</label>
+              <input type="url" id="admin-ach-link" class="form-control" placeholder="https://...">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:0.8rem">
+              <button class="btn-primary" onclick="saveAdminAchievement()">
+                <i data-lucide="check"></i> Save Achievement
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="tab-pane" id="tab-export">
           <div
             style="background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.3); border-radius:10px; padding:1.2rem; margin-bottom:1.5rem">
@@ -887,7 +951,7 @@
   </div>
 
   <div class="modal-overlay" id="resume-modal">
-    <div class="modal-dialog" style="max-width: 720px">
+    <div class="modal-dialog resume-dialog">
       <div class="modal-header">
         <div class="modal-title">
           <i data-lucide="file-text" style="color:var(--accent-cyan)"></i>
@@ -910,7 +974,17 @@
           </p>
         </div>
 
+        <div class="cv-preview" data-cv-preview hidden>
+          <iframe data-cv-frame title="Faysal Mahmud CV"></iframe>
+        </div>
+
         <div class="modal-actions" style="display:flex; gap:1rem; flex-wrap:wrap">
+          <a href="#" class="btn-primary" data-cv-download hidden style="font-size:0.88rem">
+            <i data-lucide="download"></i> Download CV
+          </a>
+          <a href="#" class="btn-secondary" data-cv-open hidden target="_blank" rel="noopener" style="font-size:0.88rem">
+            <i data-lucide="external-link"></i> Open CV
+          </a>
           <a href="mailto:23-54032-3@student.aiub.edu?subject=Resume%20Inquiry%20-%20Faysal%20Mahmud"
             class="btn-primary" style="font-size:0.88rem">
             <i data-lucide="mail"></i> Email Faysal Mahmud

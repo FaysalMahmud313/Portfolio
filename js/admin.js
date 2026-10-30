@@ -74,10 +74,10 @@ function togglePasswordVisibility() {
   input.focus();
 }
 
-// Password comes from .env
+// Password comes from admin.env
 async function readEnvPassword() {
-  const res = await fetch('.env', { cache: 'no-store' });
-  if (!res.ok) throw new Error('no .env');
+  const res = await fetch('admin.env', { cache: 'no-store' });
+  if (!res.ok) throw new Error('no admin.env');
   const line = (await res.text()).split(/\r?\n/).find((l) => l.trim().startsWith('ADMIN_PASSWORD='));
   const value = line ? line.slice(line.indexOf('=') + 1).trim().replace(/^["']|["']$/g, '') : '';
   if (!value) throw new Error('ADMIN_PASSWORD missing');
@@ -98,7 +98,9 @@ async function verifyAdminPasscode() {
   try {
     password = await readEnvPassword();
   } catch (e) {
-    showError('Login is unavailable right now.');
+    showError(location.protocol === 'file:'
+      ? 'Open the site with Live Server to log in.'
+      : 'Login is unavailable right now.');
     return;
   }
 
@@ -177,6 +179,25 @@ function switchAdminTab(tabId) {
   }
 }
 
+// Keeps uploads small enough to save
+function shrinkImage(dataUrl, type, maxSize) {
+  if (type === 'image/svg+xml' || type === 'image/gif') return Promise.resolve(dataUrl);
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const keepAlpha = type === 'image/png' || type === 'image/webp';
+      resolve(canvas.toDataURL(keepAlpha ? 'image/webp' : 'image/jpeg', 0.85));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 function setupImageUploader(fileInputId, urlInputId, previewImgId) {
   const fileInput = document.getElementById(fileInputId);
   const urlInput = document.getElementById(urlInputId);
@@ -188,17 +209,17 @@ function setupImageUploader(fileInputId, urlInputId, previewImgId) {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Image file size is larger than 2MB. Please choose a smaller image for best web performance.');
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file.');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target.result;
+    reader.onload = async (event) => {
+      const dataUrl = await shrinkImage(event.target.result, file.type, fileInputId === 'admin-avatar-file' ? 600 : 1200);
       urlInput.value = dataUrl;
       if (previewImg) previewImg.src = dataUrl;
-      showToast('Image uploaded and converted! Click "Save" to apply.');
+      showToast('Image ready! Click "Save" to apply.');
     };
     reader.readAsDataURL(file);
   });
@@ -233,6 +254,8 @@ function populateAllAdminForms() {
   renderAdminEducationList();
 
   renderAdminProjectsList();
+
+  renderAdminAchievementsList();
 }
 
 function setVal(id, val) {
@@ -262,7 +285,7 @@ function saveAdminProfile() {
     linkedin: getVal('admin-linkedin'),
     leetcode: getVal('admin-leetcode'),
     twitter: getVal('admin-twitter'),
-    resumeUrl: getVal('admin-resume') || '#resume-preview'
+    resumeUrl: getVal('admin-resume').trim()
   };
 
   savePortfolioData(currentPortfolioData);
@@ -510,6 +533,91 @@ function deleteProject(id) {
   showToast('Project deleted.');
 }
 
+let editingAchievementIndex = null;
+
+function renderAdminAchievementsList() {
+  const list = document.getElementById('admin-achievements-items');
+  if (!list) return;
+
+  const certs = currentPortfolioData.certifications || [];
+  if (!certs.length) {
+    list.innerHTML = '<p style="color:var(--text-dim); font-size:0.88rem">No achievements yet. Add one below.</p>';
+    return;
+  }
+
+  list.innerHTML = certs.map((c, i) => `
+    <div style="background:#111827; border:1px solid var(--border-subtle); padding:1rem; border-radius:8px; display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:0.75rem">
+      <div style="min-width:0">
+        <div style="font-weight:700; color:#fff">${escapeHTML(c.title)}</div>
+        <div style="font-size:0.82rem; color:var(--accent-amber)">${escapeHTML([c.issuer, c.date].filter(Boolean).join(' • '))}</div>
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-shrink:0">
+        <button class="hud-btn" onclick="loadAchievementIntoForm(${i})">Edit</button>
+        <button class="hud-btn danger" onclick="deleteAchievement(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function resetAchievementForm() {
+  editingAchievementIndex = null;
+  ['admin-ach-title', 'admin-ach-issuer', 'admin-ach-date', 'admin-ach-detail', 'admin-ach-link'].forEach((id) => setVal(id, ''));
+  const title = document.getElementById('admin-ach-form-title');
+  if (title) title.textContent = 'Add Achievement';
+}
+
+function loadAchievementIntoForm(index) {
+  const c = (currentPortfolioData.certifications || [])[index];
+  if (!c) return;
+  editingAchievementIndex = index;
+  setVal('admin-ach-title', c.title);
+  setVal('admin-ach-issuer', c.issuer);
+  setVal('admin-ach-date', c.date);
+  setVal('admin-ach-detail', c.id);
+  setVal('admin-ach-link', c.link && c.link !== '#' ? c.link : '');
+  const title = document.getElementById('admin-ach-form-title');
+  if (title) title.textContent = 'Edit Achievement';
+  document.getElementById('admin-ach-title')?.focus();
+}
+
+function saveAdminAchievement() {
+  const titleText = getVal('admin-ach-title').trim();
+  if (!titleText) {
+    showToast('Please enter an achievement title.');
+    return;
+  }
+
+  const item = {
+    title: titleText,
+    issuer: getVal('admin-ach-issuer').trim(),
+    date: getVal('admin-ach-date').trim(),
+    id: getVal('admin-ach-detail').trim(),
+    link: getVal('admin-ach-link').trim() || '#'
+  };
+
+  if (!currentPortfolioData.certifications) currentPortfolioData.certifications = [];
+  const certs = currentPortfolioData.certifications;
+  const editing = editingAchievementIndex !== null && certs[editingAchievementIndex];
+  if (editing) certs[editingAchievementIndex] = item;
+  else certs.unshift(item);
+
+  savePortfolioData(currentPortfolioData);
+  resetAchievementForm();
+  renderAdminAchievementsList();
+  showToast(editing ? 'Achievement updated!' : 'Achievement added!');
+}
+
+function deleteAchievement(index) {
+  const certs = currentPortfolioData.certifications || [];
+  if (!certs[index]) return;
+  if (!confirm(`Delete "${certs[index].title}"?`)) return;
+  certs.splice(index, 1);
+  savePortfolioData(currentPortfolioData);
+  resetAchievementForm();
+  renderAdminAchievementsList();
+  showToast('Achievement deleted.');
+}
+
 function generateDataJsContent() {
   const jsonStr = JSON.stringify(stripSecrets(currentPortfolioData), null, 2);
   return `const DEFAULT_PORTFOLIO_DATA = ${jsonStr};
@@ -619,6 +727,10 @@ window.resetProjectForm = resetProjectForm;
 window.loadProjectIntoForm = loadProjectIntoForm;
 window.saveAdminProject = saveAdminProject;
 window.deleteProject = deleteProject;
+window.resetAchievementForm = resetAchievementForm;
+window.loadAchievementIntoForm = loadAchievementIntoForm;
+window.saveAdminAchievement = saveAdminAchievement;
+window.deleteAchievement = deleteAchievement;
 window.downloadDataJsFile = downloadDataJsFile;
 window.copyDataJsCode = copyDataJsCode;
 window.exportJsonBackup = exportJsonBackup;

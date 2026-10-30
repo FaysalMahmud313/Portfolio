@@ -10,7 +10,7 @@ Open the folder in VS Code and start **Live Server** on `index.html`.
 
 ## Edit content
 
-1. Create `.env` in the project root:
+1. Create `admin.env` next to `index.html`:
    ```
    ADMIN_PASSWORD=your-password
    ```
@@ -18,4 +18,6 @@ Open the folder in VS Code and start **Live Server** on `index.html`.
 3. Edit, then **GitHub Sync & Export → Download Updated data.js**.
 4. Replace `js/data.js` with the downloaded file and push.
 
-The editor only works locally. `.env` is gitignored and never pushed.
+To offer a CV download, put the PDF at `assets/cv/Faysal Mahmud - CV.pdf` and push. The download buttons appear automatically.
+
+The editor only works locally. `admin.env` is gitignored and never pushed.

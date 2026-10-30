@@ -5,8 +5,8 @@ const DEFAULT_PORTFOLIO_DATA = {
     tagline: "Computer Science and Engineering student at American International University-Bangladesh (AIUB). Building practical software projects, exploring emerging technologies, and solving real-world problems through programming and research.",
     statusBadge: "Open for Software Engineering Internships & Research Collaborations",
     availableForHire: true,
-    avatar: "assets/images/demo-avatar.svg",
-    resumeUrl: "#resume-preview",
+    avatar: "assets/images/Profile.png",
+    resumeUrl: "assets/cv/Faysal Mahmud - CV.pdf",
     bioP1: "I am a Computer Science and Engineering student at American International University-Bangladesh with a strong interest in software engineering, web development, artificial intelligence, and research.",
     bioP2: "I enjoy building practical software projects, exploring emerging technologies, and solving real-world problems through programming and research. My goal is to grow as a software engineer while contributing to innovative projects and meaningful research.",
     email: "23-54032-3@student.aiub.edu",
@@ -70,6 +70,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       category: "Programming Languages & Web Technologies",
       icon: "code-2",
       items: [
+        { name: "Python", tag: "Backend Language" },
         { name: "C++", tag: "Object-Oriented & Algorithms" },
         { name: "Java", tag: "OOP & Banking Workflows" },
         { name: "C#", tag: ".NET & Desktop Applications" },
@@ -125,6 +126,28 @@ const DEFAULT_PORTFOLIO_DATA = {
 
   projects: [
     {
+      id: "proj-researchflow",
+      title: "ResearchFlow — Research Management Workspace",
+      subtitle: "Full-Stack Collaborative Research Platform",
+      category: "web-software",
+      categoryLabel: "Full-Stack Web Platform",
+      status: "Completed",
+      statusClass: "completed",
+      summary: "A collaborative workspace for research teams: LaTeX papers with an editor, version history and reviews, a BibTeX reference manager, datasets, code and experiment comparison, and portable LaTeX export, with server-enforced roles.",
+      description: "ResearchFlow keeps a research team's work in one place. Members write LaTeX papers in a CodeMirror 6 editor with autocomplete for commands, citation keys and labels; work autosaves and conflicting edits are compared instead of silently overwritten. Versions can be compared and restored, reviewers comment and suggest edits, and the reference manager imports BibTeX with duplicate detection. Projects export as a complete LaTeX ZIP. Access is enforced on the server with Owner, Editor, Reviewer and Viewer roles, using Argon2 password hashing, secure session cookies and rate limiting.",
+      tags: ["Python", "FastAPI", "React", "TypeScript", "SQLite", "Docker", "LaTeX", "Pytest", "Vitest"],
+      github: "",
+      demo: "",
+      image: "assets/images/ResearchFlow.png",
+      featured: true,
+      metrics: "43 pytest + 22 Vitest tests • CI with Ruff, strict mypy, pip-audit & Gitleaks",
+      highlights: [
+        "Built a full-stack research workspace: LaTeX editor with version history, BibTeX manager, and experiment tracking.",
+        "Designed a versioned FastAPI REST API with server-enforced roles, Argon2 password hashing, and rate limiting.",
+        "Wrote 43 pytest and 22 Vitest tests; GitHub Actions CI runs Ruff, strict mypy, pip-audit, and Gitleaks; the API ships in Docker."
+      ]
+    },
+    {
       id: "proj-nexttrip",
       title: "NextTrip — Travel Management System",
       subtitle: "Software Engineering Travel Management Platform",
@@ -137,7 +160,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       tags: ["Software Engineering", "Web Development", "Database Management", "Booking Workflows", "Itinerary Planning"],
       github: "",
       demo: "",
-      image: "assets/images/project-nexttrip.svg",
+      image: "assets/images/NextTrip.png",
       featured: true,
       metrics: "Completed Software Engineering Project",
       highlights: [
@@ -159,7 +182,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       tags: ["Team Project", "FinTech", "AI Cash-Flow Co-Pilot", "Financial Forecasting", "Approval Safety Preflight", "Web Development"],
       github: "",
       demo: "",
-      image: "assets/images/project-flowsense.svg",
+      image: "assets/images/Flowsense.png",
       featured: true,
       metrics: "FinTechathon 2026 Submission • Verified Preflight Approval Controls",
       highlights: [
@@ -182,7 +205,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       tags: ["Java", "OOP", "Banking Workflows", "Desktop Application", "Transaction Handling"],
       github: "",
       demo: "",
-      image: "assets/images/project-bank.svg",
+      image: "assets/images/bank management.png",
       featured: true,
       metrics: "Completed Desktop Application • 100% OOP Architecture",
       highlights: [
@@ -204,7 +227,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       tags: ["C#", "Windows Forms", ".NET", "Microsoft SQL Server", "RBAC", "CRUD Operations"],
       github: "",
       demo: "",
-      image: "assets/images/project-tourism.svg",
+      image: "assets/images/Tourism Management.png",
       featured: true,
       metrics: "Multi-Role Desktop Platform • Full SQL Server Integration",
       highlights: [
@@ -214,47 +237,25 @@ const DEFAULT_PORTFOLIO_DATA = {
       ]
     },
     {
-      id: "proj-rabri",
-      title: "RA-BRI — Rheumatoid Arthritis Risk Prediction",
-      subtitle: "Machine Learning with NHANES Data & SHAP Interpretability",
-      category: "ai-research",
-      categoryLabel: "Machine Learning & Healthcare Research",
-      status: "Research Project",
-      statusClass: "research",
-      summary: "A machine learning healthcare research project using NHANES (2011–2020) data across 13,273 participants, leakage-aware model evaluation, and SHAP-based feature interpretation.",
-      description: "Conducted machine learning research on cross-sectional epidemiological health survey records from the CDC NHANES database (2011–2020) encompassing approximately 13,273 participants. Enforced strict leakage-aware preprocessing to ensure authentic clinical predictive validity. Applied SHAP (SHapley Additive exPlanations) to interpret feature importance and understand individual demographic, inflammatory, and behavioral risk contributors.",
-      tags: ["Machine Learning", "Healthcare AI", "NHANES Dataset", "Leakage-Aware ML", "Explainable AI (XAI)", "SHAP"],
+      id: "proj-medicine-shop",
+      title: "Online Medicine Shop",
+      subtitle: "Web Technologies Team Project (PHP MVC)",
+      category: "web-software",
+      categoryLabel: "PHP & MySQL Web App",
+      status: "Completed",
+      statusClass: "completed",
+      summary: "A three-member team web shop for browsing and ordering medicines. I built registration, login, profile, home and medicine browsing, merged through pull requests.",
+      description: "An online medicine shop built as a Web Technologies group project in PHP (MVC) with a shared MySQL database. The team split the app into three parts: authentication, profile and browsing; an admin dashboard for medicines, categories and orders; and the customer cart, checkout and invoice. My part covered registration, login, profile, the home page, medicine browsing and an AJAX JSON search endpoint, secured with salted password hashing, parameterized SQL and CSRF tokens.",
+      tags: ["PHP", "MySQL", "JavaScript (AJAX)", "HTML5", "CSS3", "MVC", "Team Project"],
       github: "",
       demo: "",
-      image: "assets/images/project-rabri.svg",
+      image: "assets/images/Medicine shop.png",
       featured: true,
-      metrics: "N=13,273 Participants • 10-Year NHANES Cohort • SHAP Feature Importance",
+      metrics: "Team of 3 • Salted hashing, parameterized SQL & CSRF protection",
       highlights: [
-        "Preprocessed large-scale survey data with rigorous handling of missingness, outliers, and laboratory variables.",
-        "Prevented data leakage between training, cross-validation, and hold-out evaluation partitions.",
-        "Generated global and local SHAP summary plots highlighting biomarkers and demographic predictors of arthritis risk."
-      ]
-    },
-    {
-      id: "proj-ev",
-      title: "Explainability & Intrusion Detection in EV Charging Networks",
-      subtitle: "Cybersecurity & Leakage-Aware ML using CICEV2023 Dataset",
-      category: "ai-research",
-      categoryLabel: "Cybersecurity & Machine Learning Research",
-      status: "Research Project",
-      statusClass: "research",
-      summary: "A cybersecurity research project analyzing 111,284 electric vehicle charging-session records across 17 features, focusing on leakage-aware intrusion detection and model explainability.",
-      description: "Investigated network security threats against electric vehicle (EV) smart charging infrastructure using the benchmark CICEV2023 dataset. Evaluated supervised machine learning classifiers on approximately 111,284 charging-session flow records across 17 features. Emphasized leakage-aware evaluation to prevent overoptimistic detection scores, and coupled anomaly detection with explainability techniques to provide actionable diagnostic rationales for security operators.",
-      tags: ["Cybersecurity", "Intrusion Detection", "EV Charging Networks", "CICEV2023", "Machine Learning", "Explainable AI"],
-      github: "",
-      demo: "",
-      image: "assets/images/project-ev.svg",
-      featured: true,
-      metrics: "111,284 Charging Records • 17 Features • Leakage-Free Protocol",
-      highlights: [
-        "Evaluated multi-class network flow records to detect abnormal charging sessions and simulated attacks.",
-        "Ensured strict partition separation across charging station identifiers to eliminate temporal/spatial leakage.",
-        "Integrated explainability mechanisms to illuminate key network telemetry features driving intrusion alerts."
+        "Built registration, login, profile, and browsing features for a three-member team web shop, merged via pull requests.",
+        "Secured flows with salted password hashing, parameterized SQL, and CSRF tokens.",
+        "Added an AJAX JSON search endpoint for live medicine search."
       ]
     },
     {
@@ -334,32 +335,33 @@ const DEFAULT_PORTFOLIO_DATA = {
       { title: "SHAP-Based Feature Interpretation", icon: "bar-chart-2", desc: "Global and local feature attribution to eliminate black-box decision uncertainty in critical systems." },
       { title: "EV Charging Station Cybersecurity", icon: "shield-alert", desc: "Analyzing telemetry data from EV charging infrastructure to detect protocol anomalies and network threats." },
       { title: "Machine Learning-Based Intrusion Detection", icon: "lock", desc: "Engineering leakage-free machine learning pipelines for network flow classification and anomaly alerts." },
+      { title: "Phishing URL Detection", icon: "shield-alert", desc: "Comparing machine learning models on 1,082,664 URLs from eight public sources, with SHAP explainability." },
       { title: "AI Ethics and Online Human Rights", icon: "user-check", desc: "Investigating the societal impacts of deepfake face generation, privacy violations, and regulatory frameworks." }
     ],
     publications: [
       {
-        id: "pub-1",
-        title: "Peer-Reviewed Research Paper 1 (Title to be added)",
-        status: "Published Paper",
-        authors: "Faysal Mahmud et al.",
-        conference: "Details to be verified & updated by author",
-        year: "Published",
-        focus: "Machine Learning / Explainable AI in Healthcare Risk Prediction",
+        id: "pub-ev-intrusion",
+        title: "Explainable and Leakage-Free Intrusion Detection for EV Charging Station Authentication Attacks",
+        status: "Presented Paper",
+        authors: "N. I. Rishad, F. Mahmud, I. I. Orpa, R. A. M. Rudro, and K. Nur",
+        conference: "ICACT, Nepal",
+        year: "",
+        focus: "Removed 10 leakage-prone features, applied train-only SMOTE, and compared four models for detecting EV charging station authentication attacks (Macro F1 0.9748).",
         doi: "",
         link: "#",
-        note: "Exact paper title, conference/journal, year, and DOI link to be verified and added manually."
+        note: ""
       },
       {
-        id: "pub-2",
-        title: "Peer-Reviewed Research Paper 2 (Title to be added)",
-        status: "Published Paper",
-        authors: "Faysal Mahmud et al.",
-        conference: "Details to be verified & updated by author",
-        year: "Published",
-        focus: "Cybersecurity & Intrusion Detection in EV Charging Infrastructure",
+        id: "pub-phishing-url",
+        title: "Phishing URL Detection Using Machine Learning: A Comparative Study with SHAP Based Explainability on a Large-Scale Multi-Source Dataset",
+        status: "Presented Paper",
+        authors: "T. A. Fahim, F. Mahmud, S. J. Snegdha, R. A. M. Rudro, T. Sayeed, and K. Nur",
+        conference: "ICACT, Nepal",
+        year: "",
+        focus: "Compared machine learning models on 1,082,664 URLs from eight public sources, with SHAP-based explainability.",
         doi: "",
         link: "#",
-        note: "Exact paper title, conference/journal, year, and DOI link to be verified and added manually."
+        note: ""
       }
     ]
   },
@@ -410,13 +412,6 @@ const DEFAULT_PORTFOLIO_DATA = {
       title: "Winner — Physics Poster Presentation Competition",
       issuer: "University Poster Competition",
       date: "Academic Award",
-      id: "1st Place / Winner",
-      link: "#"
-    },
-    {
-      title: "Winner — Abstract Presentation Competition",
-      issuer: "Southeast University",
-      date: "Competition Award",
       id: "1st Place / Winner",
       link: "#"
     },
