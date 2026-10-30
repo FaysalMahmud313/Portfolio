@@ -20,4 +20,6 @@ Open the folder in VS Code and start **Live Server** on `index.html`.
 
 To offer a CV download, put the PDF at `assets/cv/Faysal Mahmud - CV.pdf` and push. The download buttons appear automatically.
 
+After changing any file in `js/` or `css/`, bump the `?v=` number on the script and stylesheet links in `index.html` so visitors get the new files right away.
+
 The editor only works locally. `admin.env` is gitignored and never pushed.
