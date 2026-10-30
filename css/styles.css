@@ -1,7 +1,3 @@
-/* ==========================================================================
-   3D CSE Web Portfolio - High Performance Cyber Glassmorphism Stylesheet
-   ========================================================================== */
-
 :root {
   --bg-primary: #07090e;
   --bg-secondary: #0d121d;
@@ -35,7 +31,6 @@
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
-/* Reset & Base */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -69,13 +64,11 @@ body {
   background: radial-gradient(circle at 50% 0%, #111a2e 0%, #07090e 70%);
 }
 
-/* Cyber Selection */
 ::selection {
   background: rgba(56, 189, 248, 0.3);
   color: #38bdf8;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -91,7 +84,6 @@ body {
   background: #38bdf8;
 }
 
-/* Subtle background noise texture */
 .noise-overlay {
   position: fixed;
   inset: 0;
@@ -101,7 +93,6 @@ body {
   z-index: 1;
 }
 
-/* Three.js Hero Canvas Container */
 #webgl-hero-container {
   position: absolute;
   top: 0;
@@ -118,7 +109,6 @@ body {
   display: block;
 }
 
-/* Fallback visual when WebGL is unavailable */
 #webgl-hero-container.no-webgl {
   background:
     radial-gradient(circle at 68% 50%, rgba(56, 189, 248, 0.28) 0, rgba(99, 102, 241, 0.16) 14%, transparent 34%),
@@ -129,7 +119,6 @@ body {
   cursor: grabbing;
 }
 
-/* Layout Container */
 .container {
   max-width: 1240px;
   margin: 0 auto;
@@ -138,9 +127,6 @@ body {
   z-index: 10;
 }
 
-/* ==========================================================================
-   Header & Navigation
-   ========================================================================== */
 .site-header {
   position: fixed;
   top: 0;
@@ -223,7 +209,6 @@ body {
   gap: 1rem;
 }
 
-/* Mobile Nav Toggle */
 .mobile-toggle {
   display: none;
   background: none;
@@ -234,9 +219,6 @@ body {
   cursor: pointer;
 }
 
-/* ==========================================================================
-   Hero Section
-   ========================================================================== */
 .hero-section {
   position: relative;
   min-height: 100vh;
@@ -256,7 +238,7 @@ body {
   align-items: center;
   gap: 3rem;
   width: 100%;
-  pointer-events: none; /* let drags reach the 3D canvas behind */
+  pointer-events: none;
 }
 
 .hero-content {
@@ -398,7 +380,6 @@ body {
   background: rgba(56, 189, 248, 0.1);
 }
 
-/* Quick Stats Ribbon */
 .hero-stats-ribbon {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -434,7 +415,6 @@ body {
   font-family: var(--font-mono);
 }
 
-/* Hero 3D Interactive Badge Overlay */
 .hero-3d-wrapper {
   position: relative;
   min-height: 480px;
@@ -467,9 +447,6 @@ body {
   50% { transform: translateY(-6px); }
 }
 
-/* ==========================================================================
-   Section Styling & Headers
-   ========================================================================== */
 .section-padding {
   padding: 6.5rem 0;
   position: relative;
@@ -504,9 +481,6 @@ body {
   color: var(--text-muted);
 }
 
-/* ==========================================================================
-   About Me & Interactive Developer Terminal
-   ========================================================================== */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -588,7 +562,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Career Interests Tags in About Card */
 .career-interests-section {
   margin-top: 1.4rem;
   padding-top: 1.2rem;
@@ -628,7 +601,6 @@ body {
   color: #fff;
 }
 
-/* Recruiter Interactive Terminal */
 .terminal-window {
   background: #0a0e17;
   border: 1px solid rgba(56, 189, 248, 0.25);
@@ -732,9 +704,6 @@ body {
   color: #000;
 }
 
-/* ==========================================================================
-   Education & Academic Timeline
-   ========================================================================== */
 .education-timeline {
   display: flex;
   flex-direction: column;
@@ -838,9 +807,6 @@ body {
   border-radius: var(--radius-full);
 }
 
-/* ==========================================================================
-   Technical Skills Matrix
-   ========================================================================== */
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
@@ -955,9 +921,6 @@ body {
   transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ==========================================================================
-   Projects Showcase & 3D Interactive Cards
-   ========================================================================== */
 .project-filters {
   display: flex;
   justify-content: center;
@@ -991,7 +954,6 @@ body {
   gap: 2.2rem;
 }
 
-/* 3D Tilt Project Card */
 .project-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -1187,9 +1149,6 @@ body {
   color: #c084fc;
 }
 
-/* ==========================================================================
-   Research & Publications Section
-   ========================================================================== */
 .research-areas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
@@ -1320,9 +1279,6 @@ body {
   align-items: center;
 }
 
-/* ==========================================================================
-   Experience & Certifications
-   ========================================================================== */
 .exp-timeline {
   display: flex;
   flex-direction: column;
@@ -1397,7 +1353,6 @@ body {
   color: var(--accent-cyan);
 }
 
-/* Certifications Grid */
 .certs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
@@ -1438,9 +1393,6 @@ body {
   color: var(--text-dim);
 }
 
-/* ==========================================================================
-   Contact Section
-   ========================================================================== */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -1542,9 +1494,6 @@ textarea.form-control {
   resize: vertical;
 }
 
-/* ==========================================================================
-   Footer
-   ========================================================================== */
 .site-footer {
   padding: 4rem 0 3rem;
   border-top: 1px solid var(--border-subtle);
@@ -1581,10 +1530,6 @@ textarea.form-control {
   color: var(--accent-cyan);
 }
 
-/* ==========================================================================
-   OWNER ADMIN CMS & EDITING SUITE
-   ========================================================================== */
-/* Floating Admin Status HUD */
 .admin-hud-bar {
   position: fixed;
   bottom: 24px;
@@ -1648,7 +1593,6 @@ textarea.form-control {
   color: #fff;
 }
 
-/* In-place quick edit triggers */
 .admin-edit-pill {
   display: none;
   align-items: center;
@@ -1679,7 +1623,6 @@ body.admin-mode-active .admin-only-section {
   display: block;
 }
 
-/* Universal Modal Overlay */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1802,7 +1745,6 @@ body.admin-mode-active .admin-only-section {
   align-items: center;
 }
 
-/* Toast Notifications */
 .toast-container {
   position: fixed;
   bottom: 24px;
@@ -1834,7 +1776,6 @@ body.admin-mode-active .admin-only-section {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Code Preview Box in Export Tab */
 .code-export-box {
   background: #05070d;
   border: 1px solid var(--border-subtle);
@@ -1848,9 +1789,6 @@ body.admin-mode-active .admin-only-section {
   white-space: pre;
 }
 
-/* ==========================================================================
-   Responsive Breakpoints
-   ========================================================================== */
 @media (max-width: 992px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -1874,8 +1812,6 @@ body.admin-mode-active .admin-only-section {
   }
 }
 
-
-/* Stacked hero (tablets & phones): 3D core gets its own slot above the text */
 @media (max-width: 992px) {
   .hero-section {
     padding: 6.5rem 0 4rem;
@@ -1912,11 +1848,6 @@ body.admin-mode-active .admin-only-section {
   }
 }
 
-/* ==========================================================================
-   UI Enhancements (all devices)
-   ========================================================================== */
-
-/* Reading progress bar */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -1931,11 +1862,9 @@ body.admin-mode-active .admin-only-section {
   pointer-events: none;
 }
 
-/* Scroll reveal (only enabled when JS adds .reveal-ready to <html>) */
 .reveal-ready .reveal {
   opacity: 0;
   translate: 0 26px;
-  /* keep the cards' own hover/tilt transitions alongside the reveal */
   transition:
     opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
     translate 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
@@ -1950,7 +1879,6 @@ body.admin-mode-active .admin-only-section {
   translate: 0 0;
 }
 
-/* Keyboard focus */
 a:focus-visible,
 button:focus-visible,
 .form-control:focus-visible,
@@ -1960,7 +1888,6 @@ button:focus-visible,
   border-radius: var(--radius-sm);
 }
 
-/* Nav icons & drawer-only items are hidden on desktop */
 .nav-ico,
 .nav-drawer-cta,
 .nav-backdrop,
@@ -1975,7 +1902,6 @@ button:focus-visible,
   .hint-touch { display: inline; }
 }
 
-/* Touch devices: no sticky hover lifts */
 @media (hover: none) {
   .btn-primary:hover,
   .btn-secondary:hover,
@@ -1996,16 +1922,11 @@ button:focus-visible,
   }
 }
 
-/* ==========================================================================
-   Phones & small tablets (Android-first)
-   ========================================================================== */
 @media (max-width: 768px) {
   :root {
     --bg-card: rgba(15, 23, 42, 0.9);
   }
 
-  /* Backdrop blur over a live WebGL canvas is the #1 cause of jank and
-     GPU crashes on Android — use solid translucent fills instead. */
   *, *::before, *::after {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
@@ -2019,7 +1940,6 @@ button:focus-visible,
     padding: 0 1.15rem;
   }
 
-  /* ---------- Header ---------- */
   .site-header {
     padding: 0.85rem 0;
     padding-top: calc(0.85rem + env(safe-area-inset-top));
@@ -2064,7 +1984,6 @@ button:focus-visible,
     height: 42px;
   }
 
-  /* ---------- Slide-in navigation drawer ---------- */
   .nav-backdrop {
     display: block;
     position: fixed;
@@ -2162,7 +2081,6 @@ button:focus-visible,
     overflow: hidden;
   }
 
-  /* ---------- Hero ---------- */
   .hero-section {
     padding: calc(5.5rem + env(safe-area-inset-top)) 0 3rem;
   }
@@ -2241,7 +2159,6 @@ button:focus-visible,
     background: rgba(15, 23, 42, 0.9);
   }
 
-  /* ---------- Sections ---------- */
   .section-padding {
     padding: 4.25rem 0;
   }
@@ -2259,7 +2176,6 @@ button:focus-visible,
     font-size: 0.95rem;
   }
 
-  /* ---------- About & terminal ---------- */
   .about-grid {
     gap: 1.5rem;
   }
@@ -2329,7 +2245,6 @@ button:focus-visible,
     min-width: 0;
   }
 
-  /* ---------- Education ---------- */
   .timeline-card {
     padding: 1.4rem 1.25rem;
   }
@@ -2355,7 +2270,6 @@ button:focus-visible,
     margin-bottom: 0;
   }
 
-  /* ---------- Skills ---------- */
   .skills-grid {
     gap: 1rem;
   }
@@ -2375,7 +2289,6 @@ button:focus-visible,
     padding: 0.55rem 0.7rem;
   }
 
-  /* ---------- Projects ---------- */
   .project-filters {
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -2435,7 +2348,6 @@ button:focus-visible,
     padding: 0.4rem 0;
   }
 
-  /* ---------- Research ---------- */
   #research h3 {
     font-size: 1.15rem !important;
   }
@@ -2453,7 +2365,6 @@ button:focus-visible,
     font-size: 1.05rem;
   }
 
-  /* ---------- Leadership ---------- */
   .exp-card {
     padding: 1.4rem 1.2rem;
   }
@@ -2471,7 +2382,6 @@ button:focus-visible,
     margin-top: 1.5rem;
   }
 
-  /* ---------- Contact ---------- */
   .contact-grid {
     gap: 1.25rem;
   }
@@ -2499,7 +2409,6 @@ button:focus-visible,
     justify-content: center;
   }
 
-  /* ---------- Footer ---------- */
   .site-footer {
     padding: 2.5rem 0 calc(2rem + env(safe-area-inset-bottom));
   }
@@ -2509,7 +2418,6 @@ button:focus-visible,
     gap: 1.1rem;
   }
 
-  /* ---------- Back to top ---------- */
   .back-to-top {
     display: inline-flex;
     align-items: center;
@@ -2539,7 +2447,6 @@ button:focus-visible,
     bottom: calc(84px + env(safe-area-inset-bottom));
   }
 
-  /* ---------- Modals become bottom sheets ---------- */
   .modal-overlay {
     padding: 0;
     align-items: flex-end;
@@ -2599,7 +2506,6 @@ button:focus-visible,
     font-size: 0.82rem;
   }
 
-  /* ---------- Admin HUD & toasts ---------- */
   .admin-hud-bar {
     bottom: calc(12px + env(safe-area-inset-bottom));
     right: 12px;
@@ -2670,9 +2576,6 @@ button:focus-visible,
   }
 }
 
-/* ==========================================================================
-   Developer Desk Hero (3D laptop)
-   ========================================================================== */
 .hero-section::before {
   content: "";
   position: absolute;
@@ -2721,7 +2624,6 @@ button:focus-visible,
   opacity: 0.6;
 }
 
-/* Control bar */
 .laptop-hud {
   position: absolute;
   left: 50%;
@@ -2830,7 +2732,6 @@ button:focus-visible,
   box-shadow: 0 0 8px #60a5fa;
 }
 
-/* Loading state */
 .laptop-loader {
   position: absolute;
   inset: 0;
@@ -2863,7 +2764,6 @@ button:focus-visible,
   visibility: hidden;
 }
 
-/* WebGL fallback */
 .laptop-fallback {
   display: none;
   position: absolute;
@@ -2929,7 +2829,6 @@ button:focus-visible,
   }
 }
 
-/* Mid-width desktops / small laptops: keep the full navbar on one line */
 @media (min-width: 769px) and (max-width: 1180px) {
   .nav-links {
     gap: 0.95rem;
@@ -2952,9 +2851,6 @@ button:focus-visible,
   }
 }
 
-/* ==========================================================================
-   Live Laptop Screen ("Faysal OS") — HTML mapped onto the 3D display
-   ========================================================================== */
 .laptop-screen {
   position: absolute;
   left: 0;
@@ -2990,7 +2886,6 @@ button:focus-visible,
   box-sizing: border-box;
 }
 
-/* wallpaper — abstract technical, matches the 3D texture beneath */
 .ls-wallpaper {
   position: absolute;
   inset: 0;
@@ -3029,7 +2924,6 @@ button:focus-visible,
   to { transform: rotate(360deg); }
 }
 
-/* status bar */
 .ls-bar {
   position: relative;
   z-index: 2;
@@ -3086,7 +2980,6 @@ button:focus-visible,
   width: 1.6em;
 }
 
-/* scroll viewport */
 .ls-scroll {
   position: relative;
   z-index: 1;
@@ -3120,7 +3013,6 @@ button:focus-visible,
   box-shadow: inset 0 0 0 2px rgba(96, 165, 250, 0.6);
 }
 
-/* "more below" fade */
 .ls-scroll-hint {
   position: absolute;
   left: 0;
@@ -3147,7 +3039,6 @@ button:focus-visible,
   to { opacity: 1; transform: none; }
 }
 
-/* ---------- shared content styles ---------- */
 .laptop-screen a {
   color: #93c5fd;
   text-decoration: none;
@@ -3355,7 +3246,6 @@ button:focus-visible,
   border-top: 1px solid rgba(148, 163, 184, 0.12);
 }
 
-/* ---------- Home ("Faysal OS" desktop) ---------- */
 .ls-home {
   position: relative;
   min-height: 100%;
@@ -3525,7 +3415,6 @@ button:focus-visible,
   50% { transform: translateY(0.25em); }
 }
 
-/* ---------- About ---------- */
 .ls-profile {
   display: flex;
   align-items: center;
@@ -3576,7 +3465,6 @@ button:focus-visible,
   font-size: 0.92em;
 }
 
-/* ---------- Projects ---------- */
 .ls-project {
   overflow: hidden;
   display: flex;
@@ -3608,7 +3496,6 @@ button:focus-visible,
   transform: scale(1.04);
 }
 
-/* fallback: clearly a placeholder, never posing as a screenshot */
 .ls-thumb-fallback {
   width: 100%;
   height: 100%;
@@ -3663,7 +3550,6 @@ button:focus-visible,
   border-radius: 0.4em;
 }
 
-/* ---------- Skills ---------- */
 .ls-skill-list {
   display: flex;
   flex-wrap: wrap;
@@ -3690,7 +3576,6 @@ button:focus-visible,
   color: #60a5fa;
 }
 
-/* ---------- Leadership ---------- */
 .ls-row-between {
   display: flex;
   justify-content: space-between;
@@ -3756,7 +3641,6 @@ button:focus-visible,
   font-size: 0.7em;
 }
 
-/* ---------- Terminal / contact ---------- */
 .ls-terminal {
   background: rgba(3, 6, 12, 0.92);
   border: 1px solid rgba(52, 211, 153, 0.28);
@@ -3851,7 +3735,6 @@ button:focus-visible,
   box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 }
 
-/* narrow screen (phones / unfocused small laptop) */
 .ls-compact .ls-home-art {
   width: 46%;
   right: -12%;
@@ -3887,7 +3770,6 @@ button:focus-visible,
   }
 }
 
-/* ---------- Control bar: room for every tab ---------- */
 @media (min-width: 993px) {
   .hero-grid {
     grid-template-columns: 0.92fr 1.08fr;
@@ -3906,7 +3788,6 @@ button:focus-visible,
   padding: 0 4px;
 }
 
-/* Phones: tabs stay under the laptop (scrollable row) with the three controls beneath */
 @media (max-width: 768px) {
   .hero-3d-wrapper {
     height: clamp(400px, 60vh, 520px);
@@ -3932,4 +3813,48 @@ button:focus-visible,
   @media (max-width: 768px) {
     .hero-3d-wrapper { height: clamp(400px, 60svh, 520px); }
   }
+}
+
+html:not(.admin-local) .admin-entry {
+  display: none !important;
+}
+
+.password-field {
+  position: relative;
+}
+.password-field .form-control {
+  width: 100%;
+  padding-right: 3rem;
+}
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.4rem;
+  transform: translateY(-50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.password-toggle:hover {
+  color: var(--accent-cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+.password-toggle .icon-hide,
+.password-toggle.is-visible .icon-show {
+  display: none;
+}
+.password-toggle.is-visible .icon-hide {
+  display: inline-block;
 }

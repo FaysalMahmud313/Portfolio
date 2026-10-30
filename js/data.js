@@ -1,14 +1,4 @@
-/**
- * 3D CSE Student Web Portfolio - Master Data Store
- * Personal & Professional Information for Faysal Mahmud
- * Computer Science and Engineering (CSE), American International University-Bangladesh (AIUB)
- *
- * This file is dynamically read by app.js. When updated through the Admin Panel,
- * you can export and overwrite this file to publish updates permanently on GitHub Pages.
- */
-
 const DEFAULT_PORTFOLIO_DATA = {
-  // Personal & Professional Information
   personal: {
     name: "Faysal Mahmud",
     role: "Aspiring Software Engineer | Web Developer | AI/ML Research Enthusiast",
@@ -20,12 +10,12 @@ const DEFAULT_PORTFOLIO_DATA = {
     bioP1: "I am a Computer Science and Engineering student at American International University-Bangladesh with a strong interest in software engineering, web development, artificial intelligence, and research.",
     bioP2: "I enjoy building practical software projects, exploring emerging technologies, and solving real-world problems through programming and research. My goal is to grow as a software engineer while contributing to innovative projects and meaningful research.",
     email: "23-54032-3@student.aiub.edu",
-    phone: "", // Preserved clean (no fabricated phone number)
+    phone: "",
     location: "Mirpur-02, Dhaka, Bangladesh",
     university: "American International University-Bangladesh (AIUB)",
     department: "Computer Science and Engineering (CSE)",
-    github: "", // Will be linked manually by the author
-    linkedin: "", // Will be linked manually by the author
+    github: "",
+    linkedin: "",
     leetcode: "",
     twitter: "",
     stats: [
@@ -46,7 +36,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     ]
   },
 
-  // Education / Academic Profile
   education: [
     {
       id: "edu-1",
@@ -76,7 +65,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     }
   ],
 
-  // Categorized Technical Skills (No arbitrary percentages assigned)
   skills: [
     {
       category: "Programming Languages & Web Technologies",
@@ -135,7 +123,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     }
   ],
 
-  // Featured Projects: Strongest completed software projects first, followed by research & experimental
   projects: [
     {
       id: "proj-nexttrip",
@@ -148,7 +135,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A software engineering project focused on travel management, itinerary planning, package booking workflows, and customer record management.",
       description: "Engineered as a practical software engineering project structured around end-to-end travel management. Implements user booking flows, travel package browsing, itinerary organization, and administrative records. Demonstrates modular application architecture, robust form handling, and relational database workflows.",
       tags: ["Software Engineering", "Web Development", "Database Management", "Booking Workflows", "Itinerary Planning"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-nexttrip.svg",
       featured: true,
@@ -170,7 +157,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "An AI-assisted cash-flow co-pilot prototype featuring shortage arithmetic, recovery plan calculations, what-if expense simulations, and multi-tier approval safety checks.",
       description: "Developed collaboratively with Team Decimal Point for FinTechathon 2026. FlowSense connects contextual AI financial advice with preflight safety checks and sandboxed execution. Automatically computes projected funding shortages, evaluates invoice factoring recovery alternatives against strict borrowing caps, and protects essential payroll reserves from unauthorized disbursement.",
       tags: ["Team Project", "FinTech", "AI Cash-Flow Co-Pilot", "Financial Forecasting", "Approval Safety Preflight", "Web Development"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-flowsense.svg",
       featured: true,
@@ -193,7 +180,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A Java-based banking application demonstrating object-oriented programming principles, account administration, and transaction workflow implementation.",
       description: "Developed in Java to demonstrate clean Object-Oriented Programming (OOP) design. Implements core banking operations including customer account creation, balance inquiry, deposit and withdrawal validation, fund transfers, and chronological transaction ledger tracking with boundary validation.",
       tags: ["Java", "OOP", "Banking Workflows", "Desktop Application", "Transaction Handling"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-bank.svg",
       featured: true,
@@ -215,7 +202,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A C# Windows Forms desktop application using Microsoft SQL Server, featuring multi-role access control for Admin, Vendor, and Traveler users.",
       description: "Engineered a desktop tourism and travel management system using C# and .NET Windows Forms with a normalized Microsoft SQL Server relational database. Features role-based access control (RBAC) separating administrative system configuration, vendor package listing, and traveler booking portals.",
       tags: ["C#", "Windows Forms", ".NET", "Microsoft SQL Server", "RBAC", "CRUD Operations"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-tourism.svg",
       featured: true,
@@ -237,7 +224,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A machine learning healthcare research project using NHANES (2011–2020) data across 13,273 participants, leakage-aware model evaluation, and SHAP-based feature interpretation.",
       description: "Conducted machine learning research on cross-sectional epidemiological health survey records from the CDC NHANES database (2011–2020) encompassing approximately 13,273 participants. Enforced strict leakage-aware preprocessing to ensure authentic clinical predictive validity. Applied SHAP (SHapley Additive exPlanations) to interpret feature importance and understand individual demographic, inflammatory, and behavioral risk contributors.",
       tags: ["Machine Learning", "Healthcare AI", "NHANES Dataset", "Leakage-Aware ML", "Explainable AI (XAI)", "SHAP"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-rabri.svg",
       featured: true,
@@ -259,7 +246,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A cybersecurity research project analyzing 111,284 electric vehicle charging-session records across 17 features, focusing on leakage-aware intrusion detection and model explainability.",
       description: "Investigated network security threats against electric vehicle (EV) smart charging infrastructure using the benchmark CICEV2023 dataset. Evaluated supervised machine learning classifiers on approximately 111,284 charging-session flow records across 17 features. Emphasized leakage-aware evaluation to prevent overoptimistic detection scores, and coupled anomaly detection with explainability techniques to provide actionable diagnostic rationales for security operators.",
       tags: ["Cybersecurity", "Intrusion Detection", "EV Charging Networks", "CICEV2023", "Machine Learning", "Explainable AI"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-ev.svg",
       featured: true,
@@ -281,7 +268,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A survey-based research study involving 120 participants in Bangladesh, investigating public concerns about synthetic AI-generated faces and their effects on digital human rights.",
       description: "Designed and executed a structured empirical study investigating user awareness, psychological perceptions, and ethical concerns regarding AI-generated synthetic faces. Surveyed 120 respondents across diverse demographics in Bangladesh. Analyzed quantitative and qualitative responses using SPSS and descriptive statistical methods to evaluate privacy risks, identity theft fears, and the necessity of regulatory safeguards.",
       tags: ["AI Ethics", "Human Rights Online", "Survey Research", "SPSS", "Deepfake Awareness", "Empirical Analysis"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-aifaces.svg",
       featured: true,
@@ -303,7 +290,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "An ESP32-S3-based smart desk companion featuring animated OLED eyes, touch and motion interaction, a local configuration webpage, and smart reminders.",
       description: "Conceptualized and prototyped an interactive smart desk companion powered by an ESP32-S3 microcontroller. Features expressive OLED animations reflecting mood and interaction states, integrated touch sensors, and PIR motion detection. Implements a local HTTP configuration webpage hosted on the ESP32 for user preferences and customizable productivity reminders.",
       tags: ["ESP32-S3", "Embedded Systems", "IoT", "Arduino IDE", "OLED Display", "Hardware Prototype"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-deskbuddy.svg",
       featured: false,
@@ -326,7 +313,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       summary: "A personal file-server concept using an ESP32-S3, hardwired W5500 Ethernet, and external storage to provide private local LAN file storage.",
       description: "Architected a low-power, standalone personal file server built on the ESP32-S3 paired with a W5500 SPI Ethernet module for reliable wired network connectivity and local mass storage. Designed to provide secure private cloud storage inside a home or laboratory local area network without external third-party subscriptions.",
       tags: ["ESP32-S3", "W5500 Ethernet", "Embedded Systems", "IoT", "File Server", "Hardware Concept"],
-      github: "", // Will be added manually by author
+      github: "",
       demo: "",
       image: "assets/images/project-filehub.svg",
       featured: false,
@@ -340,7 +327,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     }
   ],
 
-  // Dedicated Research & Publications Section
   research: {
     areas: [
       { title: "Machine Learning-Based Health Risk Prediction", icon: "activity", desc: "Developing leakage-aware predictive models using multi-year national epidemiological cohorts." },
@@ -350,8 +336,6 @@ const DEFAULT_PORTFOLIO_DATA = {
       { title: "Machine Learning-Based Intrusion Detection", icon: "lock", desc: "Engineering leakage-free machine learning pipelines for network flow classification and anomaly alerts." },
       { title: "AI Ethics and Online Human Rights", icon: "user-check", desc: "Investigating the societal impacts of deepfake face generation, privacy violations, and regulatory frameworks." }
     ],
-    // The author reported having two published research papers.
-    // Placeholder cards are provided for manual insertion of verified titles, journal/conference, year, and DOI links.
     publications: [
       {
         id: "pub-1",
@@ -380,7 +364,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     ]
   },
 
-  // Leadership & Volunteering Experience
   experience: [
     {
       id: "exp-rd-club",
@@ -415,7 +398,6 @@ const DEFAULT_PORTFOLIO_DATA = {
     }
   ],
 
-  // Achievements & Competitions (Accurately documented)
   certifications: [
     {
       title: "Winner — Abstract Presentation Competition",
@@ -482,14 +464,11 @@ const DEFAULT_PORTFOLIO_DATA = {
     }
   ],
 
-  // Security & Admin Configuration
   admin: {
-    passcode: "cse2026",
     lastUpdated: "2026-10-22"
   }
 };
 
-// Export to window object for global client access
 if (typeof window !== "undefined") {
   window.DEFAULT_PORTFOLIO_DATA = DEFAULT_PORTFOLIO_DATA;
 }

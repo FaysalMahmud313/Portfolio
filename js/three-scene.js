@@ -1,18 +1,3 @@
-/**
- * 3D WebGL Engine using Three.js — "Developer Desk"
- * Features:
- * - Procedurally modelled laptop (no external model files): aluminium chassis, instanced
- *   keyboard with backlight, trackpad, hinged lid, power key, status LED
- * - Minimal desk scene: graphite desk surface, wireless mouse, notebook & pen, mug,
- *   soft contact shadows, floating code fragments and ambient dust
- * - Lid opening + boot animation on first view, power off / on, screen focus (zoom),
- *   controlled drag-to-rotate, mouse parallax, idle breathing, reset view
- * - Laptop screen is a live canvas "OS" built from the real portfolio data
- *   (LaptopScreenUI) — apps link to the matching page sections and project modals
- * - Mobile / Android tier (capped pixel ratio, fewer effects), reduced-motion support,
- *   visibility throttling, WebGL context-loss recovery and a static fallback
- */
-
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -21,15 +6,13 @@ const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 function getPortfolioData() {
   try {
     if (typeof currentPortfolioData !== "undefined" && currentPortfolioData) return currentPortfolioData;
-  } catch (e) { /* not loaded yet */ }
+  } catch (e) {  }
   return window.DEFAULT_PORTFOLIO_DATA || {};
 }
 
 function stripLeadingEmoji(text) {
   return String(text || "").replace(/^[\p{Extended_Pictographic}️‍\s]+/u, "").trim();
 }
-
-/* ---------- 2D canvas helpers ---------- */
 
 function roundRect(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
@@ -79,7 +62,6 @@ function wrapText(ctx, text, maxW, maxLines) {
 const SANS = "Inter, 'Segoe UI', Roboto, sans-serif";
 const MONO = "'JetBrains Mono', 'Fira Code', Menlo, monospace";
 
-// Tabs shown on the laptop screen — ids match the data-laptop-app buttons under the laptop
 const SCREEN_TABS = [
   { id: "home", label: "Home", section: "#hero" },
   { id: "about", label: "About", section: "#about" },
@@ -104,10 +86,7 @@ function hasLink(url) {
   return !!url && url !== "#";
 }
 
-/**
- * CSS matrix3d that maps a w×h element onto an arbitrary screen-space quad
- * (top-left, top-right, bottom-right, bottom-left) — a projective "square to quad" homography.
- */
+// Maps HTML onto laptop screen
 function rectToQuadMatrix(w, h, q) {
   const [x0, y0] = q[0];
   const [x1, y1] = q[1];
@@ -130,10 +109,6 @@ function rectToQuadMatrix(w, h, q) {
   return `matrix3d(${a / w},${d / w},0,${g / w},${b / h},${e / h},0,${k / h},0,0,1,0,${x0},${y0},0,1)`;
 }
 
-/**
- * The 3D display texture: backlight states only (off, boot sequence, shutdown) plus the
- * wallpaper that sits underneath the live HTML screen (LaptopScreenDOM) while it is on.
- */
 class LaptopScreenUI {
   constructor(owner, pixelWidth) {
     this.owner = owner;
@@ -147,11 +122,11 @@ class LaptopScreenUI {
 
     this.texture = new THREE.CanvasTexture(this.canvas);
     this.texture.encoding = THREE.sRGBEncoding;
-    this.texture.generateMipmaps = false; // non-power-of-two safe on WebGL1 (older Android)
+    this.texture.generateMipmaps = false;
     this.texture.minFilter = THREE.LinearFilter;
     this.texture.anisotropy = Math.min(8, owner.renderer.capabilities.getMaxAnisotropy());
 
-    this.state = "off"; // off | booting | on | shutting
+    this.state = "off";
     this.stateStart = 0;
     this.bootDur = owner.reducedMotion ? 500 : 2600;
     this.shutDur = owner.reducedMotion ? 250 : 650;
@@ -241,7 +216,6 @@ class LaptopScreenUI {
     glare.addColorStop(0.7, "rgba(255,255,255,0)");
     ctx.fillStyle = glare;
     ctx.fillRect(0, 0, W, H);
-    // faint power glyph so a dark screen still reads as "press to wake"
     ctx.strokeStyle = "rgba(148,163,184,0.16)";
     ctx.lineWidth = 4;
     ctx.lineCap = "round";
@@ -367,7 +341,6 @@ class LaptopScreenUI {
     }
   }
 
-  /** Same palette as the HTML screen's wallpaper, so edges match while it fades in/out. */
   drawWallpaper() {
     if (!this.wallpaper) {
       const c = document.createElement("canvas");
@@ -398,12 +371,6 @@ class LaptopScreenUI {
   }
 }
 
-/**
- * The live laptop screen: real, scrollable HTML laid over the 3D display.
- * Every frame the display's four corners are projected to screen space and the element is
- * mapped onto them with a matrix3d homography, so it stays locked to the screen while the
- * laptop rotates, the camera focuses or the lid moves. Content comes from data.js.
- */
 class LaptopScreenDOM {
   constructor(owner) {
     this.owner = owner;
@@ -466,7 +433,6 @@ class LaptopScreenDOM {
   bindEvents() {
     const sig = { signal: this.owner.listeners.signal };
     const passiveSig = { passive: true, signal: this.owner.listeners.signal };
-    // Interacting with the screen must never rotate the laptop or move the camera
     ["pointerdown", "pointermove", "pointerup", "mousemove", "mousedown"].forEach((type) => {
       this.root.addEventListener(type, (e) => {
         e.stopPropagation();
@@ -500,7 +466,6 @@ class LaptopScreenDOM {
       const form = e.target.closest("[data-ls-contact]");
       if (!form) return;
       e.preventDefault();
-      // same mailto composition as the page's contact form (app.js → setupContactForm)
       const p = getPortfolioData().personal || {};
       const name = form.elements.name.value || "Recruiter";
       const email = form.elements.email.value || "";
@@ -585,8 +550,6 @@ class LaptopScreenDOM {
     }
     requestAnimationFrame(() => this.updateScrollHint());
   }
-
-  /* ---------- pages (all content from data.js) ---------- */
 
   head(index, title, subtitle) {
     return `
@@ -829,8 +792,6 @@ class LaptopScreenDOM {
       ${this.sectionLink("#contact", "Open the full Contact section")}`;
   }
 
-  /* ---------- per-frame alignment ---------- */
-
   update(camera, display, show, settled) {
     let visible = show;
     let quad = null;
@@ -858,8 +819,6 @@ class LaptopScreenDOM {
 
     if (visible) {
       const edge = Math.hypot(quad[1][0] - quad[0][0], quad[1][1] - quad[0][1]);
-      // lay the content out at roughly its on-screen size so text stays crisp; only re-layout
-      // once the camera has settled, so content doesn't reflow mid-animation
       if (!this.hasShown || (settled && Math.abs(edge - this.width) / this.width > 0.14)) {
         this.setSize(edge);
         this.hasShown = true;
@@ -890,9 +849,6 @@ class LaptopScreenDOM {
   }
 }
 
-/**
- * Main scene controller — keeps the original class name / constructor so app.js is unchanged.
- */
 class Portfolio3DScene {
   constructor(canvasContainerId) {
     this.container = document.getElementById(canvasContainerId);
@@ -913,7 +869,6 @@ class Portfolio3DScene {
     this.lastTime = performance.now();
     this.firstFrame = false;
 
-    // interaction state
     this.pointer = { x: 0, y: 0, inside: false, dirty: false };
     this.mouse = { x: 0, y: 0, tx: 0, ty: 0 };
     this.drag = null;
@@ -922,15 +877,13 @@ class Portfolio3DScene {
     this.zoomed = false;
     this.hovered = null;
     this.scrollProgress = 0;
-    this.idleK = 1; // ambient motion strength — eases to 0 while someone reads the screen
+    this.idleK = 1;
     this.screenActiveUntil = 0;
 
-    // lid: 0 = closed, 1 = open
     this.lidOpen = 0;
     this.lidTween = null;
     this.introStarted = false;
 
-    // smoothed camera state
     this.cam = null;
     this.layout = { cx: 0, cy: 0, fitDist: 90, zoomDist: 50 };
 
@@ -999,11 +952,7 @@ class Portfolio3DScene {
     return Math.min(window.devicePixelRatio || 1, this.isMobile ? 1.5 : 2);
   }
 
-  /* ---------- scene building ---------- */
-
   setupEnvironment() {
-    // Soft studio reflections for the aluminium. PMREM needs float render targets,
-    // which some older Android GPUs lack — desktop only, and never fatal.
     if (this.isMobile) return;
     try {
       const pmrem = new THREE.PMREMGenerator(this.renderer);
@@ -1114,13 +1063,11 @@ class Portfolio3DScene {
     const deskTex = this.makeCanvasTexture(512, (ctx, s) => {
       ctx.fillStyle = "#1a1f29";
       ctx.fillRect(0, 0, s, s);
-      // fine brushed grain
       for (let i = 0; i < 1400; i++) {
         const y = Math.random() * s;
         ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.025})`;
         ctx.fillRect(0, y, s, 1);
       }
-      // faint technical grid
       ctx.strokeStyle = "rgba(96,165,250,0.07)";
       ctx.lineWidth = 1;
       for (let i = 0; i <= s; i += 32) {
@@ -1171,11 +1118,9 @@ class Portfolio3DScene {
     const BASE_D = 21;
     const BASE_H = 1.3;
 
-    // chassis
     this.baseMesh = new THREE.Mesh(this.roundedSlab(BASE_W, BASE_D, BASE_H, 1.3, 0.28), alu);
     laptop.add(this.baseMesh);
 
-    // keyboard well with backlight glow between the keys
     this.deckMat = new THREE.MeshStandardMaterial({
       color: 0x07090d,
       roughness: 0.9,
@@ -1187,7 +1132,6 @@ class Portfolio3DScene {
     deck.position.set(0, BASE_H + 0.005, -3.5);
     laptop.add(deck);
 
-    // keys (one instanced draw call)
     const rows = [
       { units: Array(14).fill(1), depth: 0.8 },
       { units: [...Array(13).fill(1), 1.6], depth: 1.4 },
@@ -1200,7 +1144,7 @@ class Portfolio3DScene {
     const kbWidth = 25.4;
     const keyMat = new THREE.MeshStandardMaterial({ color: 0x15181f, roughness: 0.55, metalness: 0.15 });
     const keyGeo = new THREE.BoxGeometry(1, 0.26, 1);
-    const count = rows.reduce((n, r) => n + r.units.length, 0) - 1; // last fn key is the power key
+    const count = rows.reduce((n, r) => n + r.units.length, 0) - 1;
     const keys = new THREE.InstancedMesh(keyGeo, keyMat, count);
     const dummy = new THREE.Object3D();
     let z = -8.45;
@@ -1233,7 +1177,6 @@ class Portfolio3DScene {
     keys.instanceMatrix.needsUpdate = true;
     laptop.add(keys);
 
-    // trackpad
     const pad = new THREE.Mesh(
       this.roundedSlab(11, 6.4, 0.06, 0.5, 0.02),
       new THREE.MeshStandardMaterial({ color: 0x232933, metalness: this.isMobile ? 0.4 : 0.7, roughness: 0.28, envMapIntensity: 0.7 })
@@ -1241,19 +1184,16 @@ class Portfolio3DScene {
     pad.position.set(0, BASE_H - 0.02, 6.1);
     laptop.add(pad);
 
-    // status LED on the front lip
     this.ledMat = new THREE.MeshBasicMaterial({ color: 0x1e293b });
     const led = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.12, 0.08), this.ledMat);
     led.position.set(9.5, BASE_H * 0.5, BASE_D / 2 + 0.01);
     laptop.add(led);
 
-    // hinge
     const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 22, 16), darkMat);
     hinge.rotation.z = Math.PI / 2;
     hinge.position.set(0, BASE_H + 0.3, -BASE_D / 2 + 0.5);
     laptop.add(hinge);
 
-    // lid (pivots at the hinge)
     const LID_H = 20.4;
     const LID_T = 0.6;
     this.lidPivot = new THREE.Group();
@@ -1282,7 +1222,6 @@ class Portfolio3DScene {
     this.display.position.set(0, 10.55, 0.014);
     this.lidPivot.add(this.display);
 
-    // glowing logo on the back of the lid
     const logoTex = this.makeCanvasTexture(256, (ctx, s) => {
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, s, s);
@@ -1303,7 +1242,6 @@ class Portfolio3DScene {
     logo.rotation.y = Math.PI;
     this.lidPivot.add(logo);
 
-    // light spill from the display onto the keyboard (desktop only)
     if (!this.isMobile) {
       this.screenLight = new THREE.PointLight(0x8ec5ff, 0, 34, 2);
       this.screenLight.position.set(0, 9, 7);
@@ -1318,7 +1256,6 @@ class Portfolio3DScene {
   buildAccessories() {
     const matte = (color, rough = 0.6, metal = 0.2) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, envMapIntensity: 0.35 });
 
-    // wireless mouse
     const mouse = new THREE.Group();
     const shell = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 18), matte(0x262b34, 0.35, this.isMobile ? 0.3 : 0.6));
     shell.scale.set(1.55, 0.72, 2.5);
@@ -1337,7 +1274,6 @@ class Portfolio3DScene {
     this.rig.add(mouse);
     this.blobShadow(6, 8, 21, 5.2, 0.55);
 
-    // notebook + pen
     const book = new THREE.Group();
     const cover = new THREE.Mesh(this.roundedSlab(9.5, 13, 0.9, 0.5, 0.12), matte(0x121826, 0.9, 0.0));
     book.add(cover);
@@ -1357,7 +1293,6 @@ class Portfolio3DScene {
     this.rig.add(book);
     this.blobShadow(13, 16, -24, -1, 0.55);
 
-    // mug
     const mug = new THREE.Group();
     const ceramic = matte(0x1e2430, 0.42, 0.05);
     const body = new THREE.Mesh(new THREE.CylinderGeometry(1.85, 1.7, 4.4, 32), ceramic);
@@ -1451,13 +1386,6 @@ class Portfolio3DScene {
     this.scene.add(this.dust);
   }
 
-  /* ---------- layout & camera ---------- */
-
-  /**
-   * Fit the desk composition into the visible part of .hero-3d-wrapper (minus the hint
-   * badge and control bar). A view offset shifts the projection so the laptop is centred
-   * in that slot while the canvas itself can span the whole hero.
-   */
   updateLayout() {
     if (!this.camera) return;
     const cRect = this.container.getBoundingClientRect();
@@ -1490,7 +1418,6 @@ class Portfolio3DScene {
     this.layout.zoomDist = Math.max((H / 2) * 27.2 / (fit.width * 0.94 * tan), (H / 2) * 17 / (fit.height * 0.96 * tan));
     this.layout.stacked = window.innerWidth <= 992;
 
-    // fog only fades the far desk edges, whatever the camera distance
     this.scene.fog.near = this.layout.fitDist + 40;
     this.scene.fog.far = this.layout.fitDist + 220;
 
@@ -1534,8 +1461,6 @@ class Portfolio3DScene {
     );
     this.camera.lookAt(c.target);
   }
-
-  /* ---------- lid & power ---------- */
 
   applyLid() {
     const closeBy = this.zoomed ? 0 : this.scrollProgress * 0.3;
@@ -1604,12 +1529,9 @@ class Portfolio3DScene {
     if (this.screenDom) this.screenDom.refresh();
   }
 
-  /** Called by the HTML screen on any pointer / scroll / focus inside it. */
   markScreenActive() {
     this.screenActiveUntil = performance.now() + 6000;
   }
-
-  /* ---------- HTML controls ---------- */
 
   setupHud() {
     const sig = { signal: this.listeners.signal };
@@ -1651,8 +1573,6 @@ class Portfolio3DScene {
     });
     if (this.slot) this.slot.classList.toggle("display-off", !on);
   }
-
-  /* ---------- input ---------- */
 
   setupEventListeners() {
     const sig = { signal: this.listeners.signal };
@@ -1805,8 +1725,6 @@ class Portfolio3DScene {
     }
   }
 
-  /* ---------- loop ---------- */
-
   updatePauseState() {
     const paused = !(this.isInView && this.isPageVisible) || this.contextLost;
     if (paused) this.stop();
@@ -1834,8 +1752,6 @@ class Portfolio3DScene {
     if (!this.renderer) return;
     const width = this.container.clientWidth || window.innerWidth;
     const height = this.container.clientHeight || window.innerHeight;
-    // Android fires resize when the URL bar shows/hides; the canvas height is locked to the
-    // small viewport, so skip redundant (flickering) buffer reallocations.
     if (width !== this.lastWidth || height !== this.lastHeight) {
       this.lastWidth = width;
       this.lastHeight = height;
@@ -1850,7 +1766,6 @@ class Portfolio3DScene {
     const dt = Math.min(0.05, (now - this.lastTime) / 1000);
     this.lastTime = now;
 
-    // lid tween + deferred boot once the lid is mostly open
     if (this.lidTween) {
       const tw = this.lidTween;
       const k = clamp((now - tw.start) / tw.dur, 0, 1);
@@ -1864,15 +1779,12 @@ class Portfolio3DScene {
     }
     this.applyLid();
 
-    // mouse smoothing (touch devices get no hover parallax)
     this.mouse.x += (this.mouse.tx - this.mouse.x) * 0.06;
     this.mouse.y += (this.mouse.ty - this.mouse.y) * 0.06;
 
-    // ambient motion pauses while the screen is being read / scrolled / focused
     const idleTarget = this.zoomed || now < this.screenActiveUntil ? 0 : 1;
     this.idleK += (idleTarget - this.idleK) * Math.min(1, dt * 2.5);
 
-    // camera / rig smoothing
     const want = this.desiredCamera(now);
     const k = 1 - Math.exp(-dt * (this.zoomed ? 4 : 5));
     const c = this.cam;
@@ -1883,14 +1795,12 @@ class Portfolio3DScene {
     c.target.lerp(want.target, k);
     this.applyCamera();
 
-    // keep the live HTML screen locked onto the 3D display
     this.scene.updateMatrixWorld();
     this.camera.updateMatrixWorld();
     const settled = !this.drag && !this.lidTween &&
       Math.abs(c.dist - want.dist) < 0.6 && Math.abs(c.yaw - want.yaw) < 0.01 && Math.abs(c.el - want.el) < 0.01;
     this.screenDom.update(this.camera, this.display, this.screen.state === "on" && this.lidOpen > 0.97, settled);
 
-    // screen + power-linked lighting
     const b = this.screen.update(now);
     const hoverPower = this.hovered === "power";
     this.deckMat.emissiveIntensity = 0.04 + b * 0.32;
@@ -1931,7 +1841,6 @@ class Portfolio3DScene {
     }
   }
 
-  /** Release GPU resources and listeners (the page never needs this, but it keeps the class clean to reuse). */
   dispose() {
     this.stop();
     this.listeners.abort();
@@ -1951,5 +1860,4 @@ class Portfolio3DScene {
   }
 }
 
-// Global initialization hook
 window.Portfolio3DScene = Portfolio3DScene;

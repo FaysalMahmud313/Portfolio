@@ -1,41 +1,25 @@
-/**
- * Main Application Logic for 3D CSE Student Web Portfolio
- * Faysal Mahmud — American International University-Bangladesh (AIUB)
- * Handles dynamic data rendering, interactive terminal, 3D card tilt,
- * category filtering, modals, and smooth animations.
- */
-
-// Global State
 let currentPortfolioData = null;
 let currentProjectFilter = 'all';
 
-/**
- * Storage wrapper — localStorage/sessionStorage throw in some Android in-app
- * browsers (Messenger, LinkedIn, Instagram) and private modes. A throw there
- * would stop the whole page from rendering, so fail soft instead.
- */
+// Storage may be blocked
 const safeStorage = {
   get(key, session = false) {
     try { return (session ? sessionStorage : localStorage).getItem(key); } catch (e) { return null; }
   },
   set(key, value, session = false) {
-    try { (session ? sessionStorage : localStorage).setItem(key, value); } catch (e) { /* storage unavailable */ }
+    try { (session ? sessionStorage : localStorage).setItem(key, value); } catch (e) {  }
   },
   remove(key, session = false) {
-    try { (session ? sessionStorage : localStorage).removeItem(key); } catch (e) { /* storage unavailable */ }
+    try { (session ? sessionStorage : localStorage).removeItem(key); } catch (e) {  }
   }
 };
 window.safeStorage = safeStorage;
 
-// Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Load Data (LocalStorage priority, fallback to data.js)
   loadPortfolioData();
 
-  // 2. Render all UI sections (before WebGL, so a GPU failure can never blank the page)
   renderAllSections();
 
-  // 3. Initialize 3D WebGL Canvas
   if (typeof Portfolio3DScene !== 'undefined' && typeof THREE !== 'undefined') {
     try {
       new Portfolio3DScene('webgl-hero-container');
@@ -49,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('no-webgl');
   }
 
-  // 4. Setup Interactive Features
   setupNavbarScroll();
   setupMobileMenu();
   setupTerminal();
@@ -59,18 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollUI();
   setupModalBehaviour();
 
-  // 5. Initialize Lucide Icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 
-  // 6. Scroll reveal animations
   setupRevealAnimations();
 });
 
-/**
- * Load portfolio data from LocalStorage or fallback to DEFAULT_PORTFOLIO_DATA
- */
 function loadPortfolioData() {
   const currentVersion = 'faysal_mahmud_cse_v2';
   const savedVersion = safeStorage.get('portfolio_data_version');
@@ -80,6 +58,10 @@ function loadPortfolioData() {
     try {
       const parsed = JSON.parse(saved);
       if (parsed.personal && parsed.personal.name === 'Faysal Mahmud') {
+        if (parsed.admin && 'passcode' in parsed.admin) {
+          delete parsed.admin.passcode;
+          safeStorage.set('cse_portfolio_data', JSON.stringify(parsed));
+        }
         currentPortfolioData = parsed;
         return;
       }
@@ -88,15 +70,12 @@ function loadPortfolioData() {
     }
   }
 
-  // Load fresh verified data
   currentPortfolioData = JSON.parse(JSON.stringify(window.DEFAULT_PORTFOLIO_DATA || {}));
+  if (currentPortfolioData.admin) delete currentPortfolioData.admin.passcode;
   safeStorage.set('portfolio_data_version', currentVersion);
   safeStorage.set('cse_portfolio_data', JSON.stringify(currentPortfolioData));
 }
 
-/**
- * Save data to LocalStorage and refresh UI
- */
 function savePortfolioData(newData) {
   currentPortfolioData = newData;
   safeStorage.set('cse_portfolio_data', JSON.stringify(newData));
@@ -104,13 +83,10 @@ function savePortfolioData(newData) {
   setup3DCardTilt();
   if (typeof lucide !== 'undefined') lucide.createIcons();
   setupRevealAnimations();
-  window.portfolioScene?.refreshContent(); // keep the 3D laptop screen in sync with CMS edits
+  window.portfolioScene?.refreshContent();
   showToast('Portfolio updated successfully! Changes saved locally.');
 }
 
-/**
- * Master render function for all dynamic sections
- */
 function renderAllSections() {
   renderHero();
   renderAbout();
@@ -123,9 +99,6 @@ function renderAllSections() {
   renderFooter();
 }
 
-/**
- * Render Hero Section
- */
 function renderHero() {
   const p = currentPortfolioData.personal;
   if (!p) return;
@@ -144,7 +117,6 @@ function renderHero() {
   const taglineEl = document.getElementById('hero-tagline');
   if (taglineEl) taglineEl.textContent = p.tagline;
 
-  // Stats ribbon
   const statsWrap = document.getElementById('hero-stats-ribbon');
   if (statsWrap && p.stats) {
     statsWrap.innerHTML = p.stats.map(s => `
@@ -156,7 +128,6 @@ function renderHero() {
     `).join('');
   }
 
-  // Resume button link
   const resumeBtn = document.getElementById('hero-resume-btn');
   if (resumeBtn) {
     if (p.resumeUrl && p.resumeUrl !== '#resume-preview' && p.resumeUrl !== '#') {
@@ -172,9 +143,6 @@ function renderHero() {
   }
 }
 
-/**
- * Render About Section & Avatar
- */
 function renderAbout() {
   const p = currentPortfolioData.personal;
   if (!p) return;
@@ -199,7 +167,6 @@ function renderAbout() {
   const aboutBioP2 = document.getElementById('about-bio-p2');
   if (aboutBioP2) aboutBioP2.textContent = p.bioP2;
 
-  // Quick meta details
   const metaList = document.getElementById('about-meta-list');
   if (metaList) {
     metaList.innerHTML = `
@@ -222,7 +189,6 @@ function renderAbout() {
     `;
   }
 
-  // Career Interests Tags
   const interestsContainer = document.getElementById('career-interests-tags');
   if (interestsContainer && p.careerInterests) {
     interestsContainer.innerHTML = p.careerInterests.map(interest => `
@@ -231,9 +197,6 @@ function renderAbout() {
   }
 }
 
-/**
- * Render Education (University & Academic Track)
- */
 function renderEducation() {
   const eduList = currentPortfolioData.education || [];
   const container = document.getElementById('education-list');
@@ -273,7 +236,6 @@ function renderEducation() {
         </div>
       ` : ''}
 
-      <!-- Admin In-Place Edit Trigger -->
       <button class="admin-edit-pill" onclick="openAdminModal('education', '${edu.id}')" style="margin-top:1rem">
         <i data-lucide="edit-3"></i> Edit Entry
       </button>
@@ -281,9 +243,6 @@ function renderEducation() {
   `).join('');
 }
 
-/**
- * Render Categorized Skills Matrix (Without arbitrary proficiency percentages)
- */
 function renderSkills() {
   const skillsData = currentPortfolioData.skills || [];
   const container = document.getElementById('skills-matrix');
@@ -307,9 +266,6 @@ function renderSkills() {
   `).join('');
 }
 
-/**
- * Render Projects with category filtering & status tags
- */
 function renderProjects() {
   const projects = currentPortfolioData.projects || [];
   const container = document.getElementById('projects-grid');
@@ -375,7 +331,6 @@ function renderProjects() {
           </button>
         </div>
 
-        <!-- Admin In-Place Edit Trigger -->
         <button class="admin-edit-pill" onclick="openAdminModal('projects', '${proj.id}')" style="margin-top:0.8rem; align-self: flex-start">
           <i data-lucide="edit-3"></i> Edit Project
         </button>
@@ -384,14 +339,10 @@ function renderProjects() {
   `).join('');
 }
 
-/**
- * Render Dedicated Research & Publications Section
- */
 function renderResearch() {
   const researchData = currentPortfolioData.research;
   if (!researchData) return;
 
-  // Research Areas
   const areasContainer = document.getElementById('research-areas-grid');
   if (areasContainer && researchData.areas) {
     areasContainer.innerHTML = researchData.areas.map(area => `
@@ -407,7 +358,6 @@ function renderResearch() {
     `).join('');
   }
 
-  // Publications List (Author reported having two published papers; titles & links to be added manually)
   const pubsContainer = document.getElementById('publications-list');
   if (pubsContainer && researchData.publications) {
     pubsContainer.innerHTML = researchData.publications.map(pub => `
@@ -439,9 +389,6 @@ function renderResearch() {
   }
 }
 
-/**
- * Render Experience & Leadership Roles
- */
 function renderExperience() {
   const experiences = currentPortfolioData.experience || [];
   const container = document.getElementById('experience-list');
@@ -459,7 +406,6 @@ function renderExperience() {
       <ul class="exp-bullets">
         ${(exp.description || []).map(b => `<li>${escapeHTML(b)}</li>`).join('')}
       </ul>
-      <!-- Admin In-Place Edit Trigger -->
       <button class="admin-edit-pill" onclick="openAdminModal('experience', '${exp.id}')" style="margin-top:1rem">
         <i data-lucide="edit-3"></i> Edit Role
       </button>
@@ -467,9 +413,6 @@ function renderExperience() {
   `).join('');
 }
 
-/**
- * Render Achievements & Competitions
- */
 function renderCertifications() {
   const certs = currentPortfolioData.certifications || [];
   const container = document.getElementById('certifications-grid');
@@ -489,9 +432,6 @@ function renderCertifications() {
   `).join('');
 }
 
-/**
- * Render Footer
- */
 function renderFooter() {
   const p = currentPortfolioData.personal;
   if (!p) return;
@@ -509,9 +449,6 @@ function renderFooter() {
   }
 }
 
-/**
- * Project Details Deep-Dive Modal
- */
 function openProjectModal(projectId) {
   const projects = currentPortfolioData.projects || [];
   const proj = projects.find(p => p.id === projectId);
@@ -591,9 +528,6 @@ function closeProjectModal() {
   if (modal) modal.classList.remove('active');
 }
 
-/**
- * Resume Preview Modal
- */
 function openResumeModal() {
   const modal = document.getElementById('resume-modal');
   if (!modal) return;
@@ -605,11 +539,7 @@ function closeResumeModal() {
   if (modal) modal.classList.remove('active');
 }
 
-/**
- * 3D Interactive Card Hover Perspective Tilt
- */
 function setup3DCardTilt() {
-  // Tilt is a mouse effect; on touch screens a tap would leave cards stuck mid-tilt
   if (!window.matchMedia || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
   const cards = document.querySelectorAll('.tilt-card:not([data-tilt-bound])');
@@ -635,9 +565,6 @@ function setup3DCardTilt() {
   });
 }
 
-/**
- * Interactive Terminal in About Section
- */
 function setupTerminal() {
   const input = document.getElementById('terminal-input');
   const body = document.getElementById('terminal-body');
@@ -647,13 +574,11 @@ function setupTerminal() {
     const cmd = cmdText.trim().toLowerCase();
     if (!cmd) return;
 
-    // Print command entered
     const userLine = document.createElement('div');
     userLine.className = 'terminal-line';
     userLine.innerHTML = `<span class="terminal-prompt">recruiter@faysal-term:~$</span> <span class="terminal-cmd">${escapeHTML(cmd)}</span>`;
     body.appendChild(userLine);
 
-    // Process output
     const outLine = document.createElement('div');
     outLine.className = 'terminal-line';
     outLine.style.color = 'var(--text-muted)';
@@ -751,15 +676,11 @@ function setupTerminal() {
     }
   });
 
-  // Make terminal helper chips clickable
   window.runTerminalCommand = (cmd) => {
     handleCommand(cmd);
   };
 }
 
-/**
- * Filter project cards by category
- */
 function setupFilterButtons() {
   const buttons = document.querySelectorAll('.filter-btn');
   buttons.forEach(btn => {
@@ -775,9 +696,6 @@ function setupFilterButtons() {
   });
 }
 
-/**
- * Sticky Navbar on Scroll
- */
 function setupNavbarScroll() {
   const header = document.getElementById('site-header');
   window.addEventListener('scroll', () => {
@@ -789,9 +707,6 @@ function setupNavbarScroll() {
   }, { passive: true });
 }
 
-/**
- * Mobile Navigation Drawer Toggle
- */
 function setupMobileMenu() {
   const toggle = document.getElementById('mobile-toggle');
   const links = document.getElementById('nav-links');
@@ -823,9 +738,6 @@ function setupMobileMenu() {
   });
 }
 
-/**
- * Reading progress bar, back-to-top button & active nav link highlighting
- */
 function setupScrollUI() {
   const progress = document.getElementById('scroll-progress');
   const backToTop = document.getElementById('back-to-top');
@@ -851,7 +763,6 @@ function setupScrollUI() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  // Highlight the nav link for the section currently on screen
   if (!('IntersectionObserver' in window)) return;
   const navLinks = Array.from(document.querySelectorAll('.nav-link[href^="#"]'));
   const sections = navLinks
@@ -869,10 +780,6 @@ function setupScrollUI() {
   sections.forEach(section => observer.observe(section));
 }
 
-/**
- * Fade-up reveal for cards as they scroll into view.
- * Safe to call repeatedly — only observes elements it hasn't seen yet.
- */
 let revealObserver = null;
 function setupRevealAnimations() {
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -906,9 +813,6 @@ function setupRevealAnimations() {
   });
 }
 
-/**
- * Modals: lock page scroll while open, close on Escape or tapping the dimmed backdrop
- */
 function setupModalBehaviour() {
   const overlays = document.querySelectorAll('.modal-overlay');
   const syncBodyLock = () => {
@@ -930,9 +834,6 @@ function setupModalBehaviour() {
   });
 }
 
-/**
- * Contact Form Handler
- */
 function setupContactForm() {
   const form = document.getElementById('contact-form');
   if (!form) return;
@@ -954,9 +855,6 @@ function setupContactForm() {
   });
 }
 
-/**
- * Universal Toast Notification System
- */
 function showToast(message) {
   let container = document.getElementById('toast-container');
   if (!container) {
@@ -981,9 +879,6 @@ function showToast(message) {
   }, 4000);
 }
 
-/**
- * Safe HTML escaping utility
- */
 function escapeHTML(str) {
   if (!str) return '';
   return String(str)
@@ -994,7 +889,6 @@ function escapeHTML(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Global exposure
 window.showToast = showToast;
 window.savePortfolioData = savePortfolioData;
 window.openProjectModal = openProjectModal;

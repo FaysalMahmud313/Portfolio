@@ -1,24 +1,26 @@
-/**
- * Admin CMS & In-Place Editing Engine
- * Allows the owner (and ONLY the owner) to authenticate and manually edit:
- * - Profile, name, bio, and profile picture (via URL or local file upload converted to Base64)
- * - School, College, Degree, CGPA, and Coursework
- * - Projects (Title, summary, description, metrics, tags, links, images)
- * - Technical Skills & Experience
- * - One-click export to `data.js` for seamless GitHub Pages deployment!
- */
-
 let isAdminAuthenticated = false;
 let editingEducationId = null;
 let editingProjectId = null;
 
+// Editor only works locally
+function isLocalEditingHost(loc = window.location) {
+  if (loc.protocol === 'file:') return true;
+  const host = (loc.hostname || '').toLowerCase();
+  return host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host === '::1' || host.endsWith('.localhost');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Check if session was authenticated
+  if (!isLocalEditingHost()) {
+    safeStorage.remove('cse_admin_auth', true);
+    return;
+  }
+
+  document.documentElement.classList.add('admin-local');
+
   if (safeStorage.get('cse_admin_auth', true) === 'true') {
     enableAdminMode(false);
   }
 
-  // Setup Keyboard Shortcut: Ctrl + Shift + A or Cmd + Shift + A
   window.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
       e.preventDefault();
@@ -26,31 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Setup Image File Upload Handlers (converts file to Data URL)
   setupImageUploader('admin-avatar-file', 'admin-avatar-url', 'admin-avatar-preview');
   setupImageUploader('admin-proj-file', 'admin-proj-image', 'admin-proj-preview');
 });
 
-/**
- * Toggle Admin access prompt or open CMS modal
- */
 function toggleAdminAccess() {
-  if (isAdminAuthenticated) {
-    openAdminModal('profile');
-  } else {
-    openAuthModal();
-  }
+  if (!isLocalEditingHost()) return;
+  if (isAdminAuthenticated) openAdminModal('profile');
+  else openAuthModal();
 }
 
-/**
- * Open Passcode Auth Modal
- */
 function openAuthModal() {
+  if (!isLocalEditingHost()) return;
   const modal = document.getElementById('admin-auth-modal');
   const input = document.getElementById('admin-passcode-input');
   const err = document.getElementById('admin-auth-error');
   if (!modal) return;
-
   if (err) err.style.display = 'none';
   if (input) input.value = '';
   modal.classList.add('active');
@@ -60,34 +53,66 @@ function openAuthModal() {
 function closeAuthModal() {
   const modal = document.getElementById('admin-auth-modal');
   if (modal) modal.classList.remove('active');
+  setPasswordVisible(false);
 }
 
-/**
- * Verify Master Passcode
- */
-function verifyAdminPasscode() {
+function setPasswordVisible(visible) {
+  const input = document.getElementById('admin-passcode-input');
+  const btn = document.getElementById('admin-passcode-toggle');
+  if (!input || !btn) return;
+  input.type = visible ? 'text' : 'password';
+  btn.classList.toggle('is-visible', visible);
+  btn.setAttribute('aria-pressed', String(visible));
+  btn.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+  btn.title = visible ? 'Hide password' : 'Show password';
+}
+
+function togglePasswordVisibility() {
+  const input = document.getElementById('admin-passcode-input');
+  if (!input) return;
+  setPasswordVisible(input.type === 'password');
+  input.focus();
+}
+
+// Password comes from .env
+async function readEnvPassword() {
+  const res = await fetch('.env', { cache: 'no-store' });
+  if (!res.ok) throw new Error('no .env');
+  const line = (await res.text()).split(/\r?\n/).find((l) => l.trim().startsWith('ADMIN_PASSWORD='));
+  const value = line ? line.slice(line.indexOf('=') + 1).trim().replace(/^["']|["']$/g, '') : '';
+  if (!value) throw new Error('ADMIN_PASSWORD missing');
+  return value;
+}
+
+async function verifyAdminPasscode() {
   const input = document.getElementById('admin-passcode-input');
   const err = document.getElementById('admin-auth-error');
-  const enteredPass = input ? input.value.trim() : '';
+  const showError = (msg) => {
+    if (err) {
+      err.textContent = msg;
+      err.style.display = 'block';
+    }
+  };
 
-  const storedPass = currentPortfolioData.admin?.passcode || 'cse2026';
+  let password;
+  try {
+    password = await readEnvPassword();
+  } catch (e) {
+    showError('Login is unavailable right now.');
+    return;
+  }
 
-  if (enteredPass === storedPass) {
+  if (input && input.value === password) {
     enableAdminMode(true);
     closeAuthModal();
     openAdminModal('profile');
   } else {
-    if (err) {
-      err.textContent = 'Incorrect passcode. (Default demo pass is cse2026)';
-      err.style.display = 'block';
-    }
+    showError('Incorrect password.');
   }
 }
 
-/**
- * Enable Admin Mode
- */
 function enableAdminMode(showFeedback = true) {
+  if (!isLocalEditingHost()) return;
   isAdminAuthenticated = true;
   safeStorage.set('cse_admin_auth', 'true', true);
   document.body.classList.add('admin-mode-active');
@@ -100,9 +125,6 @@ function enableAdminMode(showFeedback = true) {
   }
 }
 
-/**
- * Exit Admin Mode
- */
 function exitAdminMode() {
   isAdminAuthenticated = false;
   safeStorage.remove('cse_admin_auth', true);
@@ -115,9 +137,6 @@ function exitAdminMode() {
   showToast('Exited Admin Mode.');
 }
 
-/**
- * Open Admin CMS Modal with specified tab
- */
 function openAdminModal(tabName = 'profile', targetId = null) {
   if (!isAdminAuthenticated) {
     openAuthModal();
@@ -130,7 +149,6 @@ function openAdminModal(tabName = 'profile', targetId = null) {
   switchAdminTab(tabName);
   modal.classList.add('active');
 
-  // If specific ID requested (e.g. from in-place edit buttons)
   if (tabName === 'education' && targetId) {
     loadEducationIntoForm(targetId);
   } else if (tabName === 'projects' && targetId) {
@@ -145,9 +163,6 @@ function closeAdminModal() {
   if (modal) modal.classList.remove('active');
 }
 
-/**
- * Switch Tab in Admin Modal
- */
 function switchAdminTab(tabId) {
   document.querySelectorAll('.modal-tab-btn').forEach(b => {
     b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
@@ -162,9 +177,6 @@ function switchAdminTab(tabId) {
   }
 }
 
-/**
- * Helper to setup file uploader and convert to Base64
- */
 function setupImageUploader(fileInputId, urlInputId, previewImgId) {
   const fileInput = document.getElementById(fileInputId);
   const urlInput = document.getElementById(urlInputId);
@@ -196,13 +208,9 @@ function setupImageUploader(fileInputId, urlInputId, previewImgId) {
   });
 }
 
-/**
- * Populate all forms in the Admin panel from current data
- */
 function populateAllAdminForms() {
   const p = currentPortfolioData.personal || {};
 
-  // Profile Form
   setVal('admin-name', p.name);
   setVal('admin-role', p.role);
   setVal('admin-status', p.statusBadge);
@@ -222,10 +230,8 @@ function populateAllAdminForms() {
   const previewAvatar = document.getElementById('admin-avatar-preview');
   if (previewAvatar) previewAvatar.src = p.avatar || 'assets/images/demo-avatar.svg';
 
-  // Populate Education List
   renderAdminEducationList();
 
-  // Populate Projects List
   renderAdminProjectsList();
 }
 
@@ -239,9 +245,6 @@ function getVal(id) {
   return el ? el.value.trim() : '';
 }
 
-/**
- * Save Profile Settings
- */
 function saveAdminProfile() {
   currentPortfolioData.personal = {
     ...currentPortfolioData.personal,
@@ -266,9 +269,6 @@ function saveAdminProfile() {
   showToast('Profile information updated successfully!');
 }
 
-/* ==========================================================================
-   Education Management (College & School)
-   ========================================================================== */
 function renderAdminEducationList() {
   const list = document.getElementById('admin-education-items');
   if (!list) return;
@@ -375,9 +375,6 @@ function deleteEducation(id) {
   showToast('Education entry deleted.');
 }
 
-/* ==========================================================================
-   Project Management
-   ========================================================================== */
 function renderAdminProjectsList() {
   const list = document.getElementById('admin-projects-items');
   if (!list) return;
@@ -513,18 +510,9 @@ function deleteProject(id) {
   showToast('Project deleted.');
 }
 
-/* ==========================================================================
-   Export & GitHub Pages Synchronization
-   ========================================================================== */
 function generateDataJsContent() {
-  const jsonStr = JSON.stringify(currentPortfolioData, null, 2);
-  return `/**
- * 3D CSE Student Portfolio - Master Data Store
- * Automatically exported from Admin CMS.
- * Commit this updated file to your GitHub repository to update your live site!
- */
-
-const DEFAULT_PORTFOLIO_DATA = ${jsonStr};
+  const jsonStr = JSON.stringify(stripSecrets(currentPortfolioData), null, 2);
+  return `const DEFAULT_PORTFOLIO_DATA = ${jsonStr};
 
 if (typeof window !== "undefined") {
   window.DEFAULT_PORTFOLIO_DATA = DEFAULT_PORTFOLIO_DATA;
@@ -539,9 +527,6 @@ function updateExportCodePreview() {
   }
 }
 
-/**
- * Download data.js file directly to student's Downloads folder
- */
 function downloadDataJsFile() {
   const content = generateDataJsContent();
   const blob = new Blob([content], { type: 'application/javascript;charset=utf-8' });
@@ -556,9 +541,6 @@ function downloadDataJsFile() {
   showToast('Downloaded data.js! Place it inside portfolio-3d/js/ and push to GitHub.');
 }
 
-/**
- * Copy data.js code to clipboard
- */
 function copyDataJsCode() {
   const content = generateDataJsContent();
   navigator.clipboard.writeText(content).then(() => {
@@ -568,11 +550,14 @@ function copyDataJsCode() {
   });
 }
 
-/**
- * Export JSON backup file
- */
+function stripSecrets(data) {
+  const copy = JSON.parse(JSON.stringify(data || {}));
+  if (copy.admin) delete copy.admin.passcode;
+  return copy;
+}
+
 function exportJsonBackup() {
-  const jsonStr = JSON.stringify(currentPortfolioData, null, 2);
+  const jsonStr = JSON.stringify(stripSecrets(currentPortfolioData), null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -583,9 +568,6 @@ function exportJsonBackup() {
   showToast('Downloaded full JSON backup!');
 }
 
-/**
- * Import JSON backup
- */
 function importJsonBackup(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -593,7 +575,7 @@ function importJsonBackup(event) {
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
-      const imported = JSON.parse(e.target.result);
+      const imported = stripSecrets(JSON.parse(e.target.result));
       if (imported.personal && imported.projects) {
         savePortfolioData(imported);
         populateAllAdminForms();
@@ -608,25 +590,6 @@ function importJsonBackup(event) {
   reader.readAsText(file);
 }
 
-/**
- * Change Master Admin Passcode
- */
-function changeAdminPasscode() {
-  const newPass = prompt('Enter new Master Passcode:');
-  if (!newPass || newPass.trim().length < 4) {
-    alert('Passcode must be at least 4 characters long.');
-    return;
-  }
-
-  if (!currentPortfolioData.admin) currentPortfolioData.admin = {};
-  currentPortfolioData.admin.passcode = newPass.trim();
-  savePortfolioData(currentPortfolioData);
-  showToast('Admin passcode updated successfully! Remember your new passcode.');
-}
-
-/**
- * Reset to factory demo data
- */
 function resetToDemoData() {
   if (!confirm('Are you sure you want to restore the initial demo data? Any unsaved local edits will be cleared.')) return;
   safeStorage.remove('cse_portfolio_data');
@@ -636,11 +599,12 @@ function resetToDemoData() {
   showToast('Reset to default demo data completed.');
 }
 
-// Global exposure
 window.toggleAdminAccess = toggleAdminAccess;
+window.isLocalEditingHost = isLocalEditingHost;
 window.openAuthModal = openAuthModal;
 window.closeAuthModal = closeAuthModal;
 window.verifyAdminPasscode = verifyAdminPasscode;
+window.togglePasswordVisibility = togglePasswordVisibility;
 window.openAdminModal = openAdminModal;
 window.closeAdminModal = closeAdminModal;
 window.switchAdminTab = switchAdminTab;
@@ -658,5 +622,4 @@ window.downloadDataJsFile = downloadDataJsFile;
 window.copyDataJsCode = copyDataJsCode;
 window.exportJsonBackup = exportJsonBackup;
 window.importJsonBackup = importJsonBackup;
-window.changeAdminPasscode = changeAdminPasscode;
 window.resetToDemoData = resetToDemoData;

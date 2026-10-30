@@ -34,7 +34,7 @@ Built with **Three.js WebGL**, modern cyber glassmorphism, responsive 3D card pe
 - ** Secret Owner-Only Admin Portal**:
   - Hidden from regular visitors.
   - Activated via keyboard shortcut (**`Ctrl + Shift + A`** or **`Cmd + Shift + A`**) or by clicking the lock icon in the footer/navbar.
-  - Master Passcode: `cse2026` (can be changed anytime in the Admin Settings tab).
+  - Works only on your local copy. The password is `ADMIN_PASSWORD` in your local `.env` file, which is gitignored and never pushed (see **Admin Password** below).
   - In-place editing: Click the "Edit" badge on any card.
   - Image uploader: Upload any personal photo or project screenshot from your laptop with instant preview.
   - **1-Click GitHub Export**: Generates an updated `data.js` file ready to be committed to your repository so changes are visible to visitors worldwide.
@@ -146,9 +146,9 @@ git push -u origin main
 When you are ready to link your GitHub repos, LinkedIn profile, or publication DOIs:
 
 ### Method 1: Using the Built-In Admin Portal (Recommended)
-1. Open your portfolio in any web browser.
+1. Run the portfolio on your PC with a local server (for example VS Code **Live Server**, or `python -m http.server 8000`) and open it at `http://localhost`. Double-clicking `index.html` can't read `.env`.
 2. Press **`Ctrl + Shift + A`** (or click the lock icon in the footer/navbar).
-3. Enter the master passcode: **`cse2026`** and click **Unlock CMS**.
+3. Enter the password from your `.env` file and click **Unlock CMS**.
 4. In the **Portfolio Control Center**:
    - **👤 Profile & Picture**: Paste your GitHub profile URL, LinkedIn URL, or upload a custom photo.
    - **🚀 Projects Showcase**: Click **Edit** on any project (e.g. NextTrip, FlowSense, Bank Management) and paste the GitHub repository link.
@@ -160,6 +160,12 @@ When you are ready to link your GitHub repos, LinkedIn profile, or publication D
    git commit -m "Add GitHub repository links"
    git push
    ```
+
+### 🔑 Admin Password
+- Your password lives in **`.env`** (next to `index.html`) as `ADMIN_PASSWORD=your-password`. To change it, edit that one line and save. That's all.
+- `.env` is listed in `.gitignore`, so it is **never committed or pushed**. Only `.env.example` (a placeholder) is committed.
+- **The live site has no admin login at all.** GitHub Pages never receives `.env`, and the editor buttons are hidden unless the site runs on `localhost`. Visitors can't log in, and even if someone forced the editor open in their own browser, changes would only affect their own copy. The live site changes only when **you** push a new `js/data.js`, so your GitHub account is the real protection.
+- Before every commit, run `git status` and make sure `.env` is **not** listed.
 
 ### Method 2: Direct File Editing
 Open [`js/data.js`](file:///C:/Users/ASUS/.gemini/antigravity/scratch/portfolio-3d/js/data.js) in your code editor, fill in the `github` and `demo` fields, save, and push to GitHub.
