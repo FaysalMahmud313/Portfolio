@@ -483,9 +483,20 @@ body {
 
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  grid-template-areas:
+    "portrait card"
+    "terminal terminal";
+  gap: 2.5rem 3rem;
+  align-items: start;
+}
+
+.about-grid .about-card {
+  grid-area: card;
+}
+
+.about-grid .terminal-window {
+  grid-area: terminal;
 }
 
 .about-card {
@@ -515,21 +526,25 @@ body {
   margin-bottom: 1.8rem;
 }
 
-.avatar-frame {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  padding: 3px;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  position: relative;
-  flex-shrink: 0;
+.about-portrait {
+  grid-area: portrait;
+  position: sticky;
+  top: 100px;
+  margin: 0;
+  padding: 6px;
+  border-radius: calc(var(--radius-lg) + 4px);
+  background: linear-gradient(160deg, rgba(56, 189, 248, 0.45), rgba(99, 102, 241, 0.18) 45%, rgba(168, 85, 247, 0.35));
+  box-shadow: 0 24px 50px -20px rgba(0, 0, 0, 0.75), 0 0 40px -10px rgba(56, 189, 248, 0.25);
 }
 
-.avatar-frame img {
+.about-portrait img {
+  display: block;
   width: 100%;
-  height: 100%;
-  border-radius: 50%;
+  height: auto;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: var(--radius-lg);
   background: #0f172a;
 }
 
@@ -1804,8 +1819,12 @@ body.admin-mode-active .admin-only-section {
   .hero-stats-ribbon {
     justify-content: center;
   }
-  .about-grid, .contact-grid {
+  .contact-grid {
     grid-template-columns: 1fr;
+  }
+  .about-grid {
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
   }
   .education-meta {
     align-items: flex-start;
@@ -2177,7 +2196,17 @@ button:focus-visible,
   }
 
   .about-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "portrait"
+      "card"
+      "terminal";
     gap: 1.5rem;
+  }
+  .about-portrait {
+    position: static;
+    width: min(280px, 78vw);
+    justify-self: center;
   }
   .about-card {
     padding: 1.5rem 1.25rem;
@@ -2185,10 +2214,6 @@ button:focus-visible,
   .about-avatar-row {
     gap: 1rem;
     margin-bottom: 1.3rem;
-  }
-  .avatar-frame {
-    width: 72px;
-    height: 72px;
   }
   #about-name {
     font-size: 1.2rem !important;

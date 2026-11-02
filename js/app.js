@@ -926,7 +926,7 @@ function setupRevealAnimations() {
   }
 
   const selector = [
-    '.section-header', '.about-card', '.terminal-window', '.timeline-card',
+    '.section-header', '.about-portrait', '.about-card', '.terminal-window', '.timeline-card',
     '.skill-category-card', '.project-card', '.research-area-card', '.publication-card',
     '.exp-card', '.cert-card', '.contact-info-card', '.contact-form'
   ].join(',');
