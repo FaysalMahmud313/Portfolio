@@ -178,7 +178,7 @@ function renderHero() {
   if (nameEl) nameEl.textContent = p.name;
 
   const roleEl = document.getElementById('hero-role');
-  if (roleEl) roleEl.textContent = p.role;
+  if (roleEl) roleEl.textContent = String(p.role || '').split('|').map(s => s.trim()).filter(Boolean).join('  ·  ');
 
   const taglineEl = document.getElementById('hero-tagline');
   if (taglineEl) taglineEl.textContent = p.tagline;
@@ -443,11 +443,16 @@ function renderResearch() {
             <em>${escapeHTML(pub.note)}</em>
           </div>
         ` : ''}
-        ${pub.link && pub.link !== '#' ? `
+        ${(pub.link && pub.link !== '#') || pub.doi ? `
           <div class="pub-links">
-            <a href="${escapeHTML(pub.link)}" target="_blank" rel="noopener" class="icon-link-btn">
-              <i data-lucide="external-link"></i> View Publication / DOI
-            </a>
+            ${pub.link && pub.link !== '#' ? `
+              <a href="${escapeHTML(pub.link)}" target="_blank" rel="noopener" class="pub-link-btn">
+                <i data-lucide="external-link"></i> Read on IEEE Xplore
+              </a>
+            ` : ''}
+            ${pub.doi ? `
+              <a href="https://doi.org/${escapeHTML(pub.doi)}" target="_blank" rel="noopener" class="pub-doi">DOI: ${escapeHTML(pub.doi)}</a>
+            ` : ''}
           </div>
         ` : ''}
       </div>
@@ -532,7 +537,7 @@ function openProjectModal(projectId) {
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1.2rem">
-      <div style="font-family:var(--font-mono); color:var(--accent-cyan); font-weight:600">${escapeHTML(proj.subtitle || '')}</div>
+      <div style="font-family:var(--font-sans); color:var(--accent-cyan); font-weight:600">${escapeHTML(proj.subtitle || '')}</div>
       <div style="display:flex; gap:0.5rem">
         ${proj.status ? `<span class="project-status-pill status-${proj.statusClass || 'completed'}" style="position:static">${escapeHTML(proj.status)}</span>` : ''}
         <span class="project-badge-pill" style="position:static">${escapeHTML(proj.categoryLabel || proj.category)}</span>
@@ -765,7 +770,7 @@ function setupTerminal() {
           • EV Charging Station Cybersecurity &amp; Intrusion Detection (CICEV2023)<br>
           • AI Ethics &amp; Online Human Rights (Empirical Survey)<br>
           • Phishing URL Detection with SHAP (1,082,664 URLs, 8 sources)<br>
-          • Conference papers: 2, presented at ICACT, Nepal
+          • Publications: 2 papers in IEEE Xplore (ICACT 2026, Kathmandu, Nepal)
         `;
         break;
 

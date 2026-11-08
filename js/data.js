@@ -344,25 +344,25 @@ const DEFAULT_PORTFOLIO_DATA = {
       {
         id: "pub-ev-intrusion",
         title: "Explainable and Leakage-Free Intrusion Detection for EV Charging Station Authentication Attacks",
-        status: "Presented Paper",
+        status: "IEEE Xplore",
         authors: "N. I. Rishad, F. Mahmud, I. I. Orpa, R. A. M. Rudro, and K. Nur",
-        conference: "ICACT, Nepal",
-        year: "",
+        conference: "International Conference on Advanced Computing Technologies (ICACT), Kathmandu, Nepal",
+        year: "2026",
         focus: "Removed 10 leakage-prone features, applied train-only SMOTE, and compared four models for detecting EV charging station authentication attacks (Macro F1 0.9748).",
-        doi: "",
-        link: "#",
+        doi: "10.1109/ICACT70625.2026.11748720",
+        link: "https://ieeexplore.ieee.org/document/11748720",
         note: ""
       },
       {
         id: "pub-phishing-url",
         title: "Phishing URL Detection Using Machine Learning: A Comparative Study with SHAP Based Explainability on a Large-Scale Multi-Source Dataset",
-        status: "Presented Paper",
+        status: "IEEE Xplore",
         authors: "T. A. Fahim, F. Mahmud, S. J. Snegdha, R. A. M. Rudro, T. Sayeed, and K. Nur",
-        conference: "ICACT, Nepal",
-        year: "",
+        conference: "International Conference on Advanced Computing Technologies (ICACT), Kathmandu, Nepal",
+        year: "2026",
         focus: "Compared machine learning models on 1,082,664 URLs from eight public sources, with SHAP-based explainability.",
-        doi: "",
-        link: "#",
+        doi: "10.1109/ICACT70625.2026.11748531",
+        link: "https://ieeexplore.ieee.org/document/11748531",
         note: ""
       }
     ]
