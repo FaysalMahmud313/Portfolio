@@ -207,7 +207,7 @@ const DEFAULT_PORTFOLIO_DATA = {
       tags: ["Java", "OOP", "Banking Workflows", "Desktop Application", "Transaction Handling"],
       github: "",
       demo: "",
-      image: "assets/images/bank management.png",
+      image: "assets/images/bank-transaction-history.webp",
       featured: true,
       metrics: "Completed Desktop Application • 100% OOP Architecture",
       highlights: [
