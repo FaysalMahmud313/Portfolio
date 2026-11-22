@@ -496,12 +496,17 @@ function saveAdminProject() {
   else if (statusVal.toLowerCase().includes('research')) statusClass = 'research';
   else if (statusVal.toLowerCase().includes('concept')) statusClass = 'concept';
 
+  const existing = editingProjectId
+    ? (currentPortfolioData.projects || []).find(p => p.id === editingProjectId) || {}
+    : {};
+
   const projObj = {
+    ...existing,
     id: editingProjectId || ('proj-' + Date.now()),
     title: title,
     subtitle: getVal('admin-proj-subtitle'),
     category: category,
-    categoryLabel: categoryLabels[category] || category,
+    categoryLabel: existing.category === category && existing.categoryLabel ? existing.categoryLabel : (categoryLabels[category] || category),
     status: statusVal,
     statusClass: statusClass,
     summary: getVal('admin-proj-summary'),

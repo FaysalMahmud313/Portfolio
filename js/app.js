@@ -353,7 +353,7 @@ function renderProjects() {
   container.innerHTML = filtered.map(proj => `
     <div class="project-card tilt-card" data-tilt data-id="${proj.id}">
       <div class="project-image-box">
-        <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}" loading="lazy">
+        <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}" loading="lazy"${proj.imageStyle === 'logo' ? ' class="is-logo"' : ''}>
         ${proj.status ? `
           <span class="project-status-pill status-${proj.statusClass || 'completed'}">
             ${escapeHTML(proj.status)}
@@ -533,7 +533,7 @@ function openProjectModal(projectId) {
 
   body.innerHTML = `
     <div style="margin-bottom: 1.5rem">
-      <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}" style="width:100%; max-height:280px; object-fit:cover; border-radius:12px; border:1px solid var(--border-subtle)">
+      <img src="${escapeHTML(proj.image || 'assets/images/project-systems.svg')}" alt="${escapeHTML(proj.title)}"${proj.imageStyle === 'logo' ? ' class="is-logo"' : ''} style="width:100%; max-height:280px; object-fit:cover; border-radius:12px; border:1px solid var(--border-subtle)">
     </div>
 
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1.2rem">
@@ -759,7 +759,8 @@ function setupTerminal() {
           • <strong>AI DeskBuddy</strong>: ESP32-S3 smart desk companion with OLED expressions<br>
           • <strong>Faysal FileHub</strong>: ESP32-S3 &amp; W5500 Ethernet personal file server concept<br>
           • <strong>ResearchFlow</strong>: Full-stack research workspace (FastAPI, React, TypeScript)<br>
-          • <strong>Online Medicine Shop</strong>: PHP MVC &amp; MySQL team web shop
+          • <strong>Online Medicine Shop</strong>: PHP MVC &amp; MySQL team web shop<br>
+          • <strong>SujogKhuji</strong>: Opportunity finder PWA for Bangladeshi students (sujogkhuji.vercel.app)
         `;
         break;
 

@@ -4115,3 +4115,19 @@ h1, h2, h3, h4,
   color: var(--accent-cyan);
   text-decoration: underline;
 }
+
+/* Logo-style project images (square app icons) */
+.project-image-box img.is-logo,
+img.is-logo {
+  object-fit: contain !important;
+  padding: 1.75rem;
+  background: radial-gradient(circle at 50% 45%, rgba(56, 189, 248, 0.16), transparent 65%), #0b1220;
+}
+
+.project-card:hover .project-image-box img.is-logo {
+  transform: scale(1.03);
+}
+
+.ls-thumb img.is-logo {
+  padding: 0.9em;
+}

@@ -22,7 +22,7 @@ const DEFAULT_PORTFOLIO_DATA = {
     twitter: "",
     stats: [
       { label: "Institution", value: "AIUB CSE", note: "Dhaka, Bangladesh" },
-      { label: "Engineering Projects", value: "9 Projects", note: "Software, IoT & AI" },
+      { label: "Engineering Projects", value: "10 Projects", note: "Software, IoT & AI" },
       { label: "Research Areas", value: "ML & XAI", note: "Healthcare & EV Security" },
       { label: "Leadership & Service", value: "AIUB R&D", note: "Organizer & Scout Leader" }
     ],
@@ -78,9 +78,31 @@ const DEFAULT_PORTFOLIO_DATA = {
         { name: "C#", tag: ".NET & Desktop Applications" },
         { name: "HTML5", tag: "Semantic Web Structure" },
         { name: "CSS3", tag: "Responsive Styling" },
-        { name: "JavaScript", tag: "Client-Side Scripting" },
+        { name: "JavaScript (ES2022)", tag: "Client & Server Development" },
         { name: "PHP", tag: "Server-Side Web Development" },
         { name: "SQL", tag: "Relational Queries & Schema" }
+      ]
+    },
+    {
+      category: "Backend, Cloud & DevOps",
+      icon: "server",
+      items: [
+        { name: "Node.js", tag: "Server-Side JavaScript" },
+        { name: "PostgreSQL & Supabase", tag: "Database & Row-Level Security" },
+        { name: "REST APIs", tag: "Backend Integration" },
+        { name: "Serverless Functions", tag: "Vercel Deployments" },
+        { name: "GitHub Actions", tag: "CI/CD & Scheduled Jobs" }
+      ]
+    },
+    {
+      category: "Modern Web, AI & Security",
+      icon: "shield-check",
+      items: [
+        { name: "Progressive Web Apps", tag: "Service Workers & Offline Support" },
+        { name: "Responsive & Accessible Design", tag: "WCAG" },
+        { name: "LLM Integration", tag: "Prompt Design & Tool Calling" },
+        { name: "Web Security", tag: "RLS, HMAC, SSRF Prevention & CSP" },
+        { name: "Automated Testing", tag: "Node Test Runner & Python unittest" }
       ]
     },
     {
@@ -127,6 +149,32 @@ const DEFAULT_PORTFOLIO_DATA = {
   ],
 
   projects: [
+    {
+      id: "proj-sujogkhuji",
+      title: "SujogKhuji (সুযোগ খুঁজি) — Opportunity Finder & Deadline Tracker",
+      subtitle: "Full-Stack Progressive Web App for Bangladeshi Students",
+      category: "web-software",
+      categoryLabel: "Full-Stack PWA",
+      status: "Live",
+      statusClass: "completed",
+      summary: "A full-stack PWA that collects jobs, internships, scholarships, hackathons and fellowships for Bangladeshi students twice daily and tracks deadlines, with evidence-checked AI extraction and zero hosting cost.",
+      description: "SujogKhuji brings jobs, internships, scholarships, hackathons and fellowships for Bangladeshi students into one feed, filterable by category, region and experience level, and installable on phone and PC with offline support. A Python collector on GitHub Actions runs twice daily, searches the web with a three-provider fallback (Tavily, Serper, Exa), extracts structured fields, removes duplicates, flags scams and expired posts, and syncs about 185 open listings to PostgreSQL. Free LLMs (Groq, OpenRouter) turn a pasted circular, link or name into structured data, and every fact must be backed by a quote found in the source, which keeps invented deadlines and salaries out. Accounts use email-code sign-in through a signed (HMAC) webhook, PostgreSQL row-level security, an offline change queue and conflict-safe syncing across devices.",
+      tags: ["JavaScript", "Node.js", "Python", "PostgreSQL", "Supabase", "Vercel", "GitHub Actions", "LLM APIs", "PWA"],
+      github: "https://github.com/FaysalMahmud313/SujogKhuji",
+      demo: "https://sujogkhuji.vercel.app",
+      image: "assets/images/SujogKhuji.png",
+      imageStyle: "logo",
+      featured: true,
+      metrics: "~185 open listings • 83 automated tests in CI • Zero hosting cost",
+      highlights: [
+        "Built a full-stack Progressive Web App that collects jobs, internships, scholarships, hackathons and fellowships for Bangladeshi students into one feed, with filters by category, region and experience level, installable on phone and PC with offline support.",
+        "Designed an automated data pipeline: a Python collector on GitHub Actions runs twice daily, searches the web with a three-provider fallback (Tavily → Serper → Exa), extracts structured fields, removes duplicates, flags scam listings and expired posts, and syncs about 185 open listings to PostgreSQL.",
+        "Developed AI extraction using free LLMs (Groq, OpenRouter) that turns a pasted circular, link or name into structured data; every fact must be backed by a quote found in the source, which keeps invented deadlines and salaries out of the results.",
+        "Implemented secure accounts and cross-device sync: email-code sign-in through a signed webhook (HMAC), PostgreSQL row-level security, an offline change queue, and conflict-safe merging with optimistic concurrency.",
+        "Hardened the backend against common attacks: SSRF protection with DNS checks, prompt-injection safeguards, per-user rate limits, a strict Content Security Policy, and no service-role key anywhere.",
+        "Ran the whole system at zero hosting cost on free tiers with usage caps enforced in the database, backed by 83 automated tests (Node.js and Python) in CI."
+      ]
+    },
     {
       id: "proj-researchflow",
       title: "ResearchFlow — Research Management Workspace",

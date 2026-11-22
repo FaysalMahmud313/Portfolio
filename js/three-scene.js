@@ -656,7 +656,7 @@ class LaptopScreenDOM {
           <article class="ls-card ls-project">
             <div class="ls-thumb">
               ${proj.image
-                ? `<img src="${esc(proj.image)}" alt="${esc(proj.title)} preview" loading="lazy" data-fallback="${esc(initials)}">`
+                ? `<img src="${esc(proj.image)}" alt="${esc(proj.title)} preview" loading="lazy" data-fallback="${esc(initials)}"${proj.imageStyle === "logo" ? ' class="is-logo"' : ""}>`
                 : `<div class="ls-thumb-fallback">${esc(initials)}</div>`}
               ${proj.status ? `<span class="ls-status-chip ls-st-${esc(proj.statusClass || "completed")}">${esc(proj.status)}</span>` : ""}
             </div>
